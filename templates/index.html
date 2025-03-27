@@ -8,9 +8,31 @@
 <body>
     <h1>Kauppalista</h1>
   {% if session.username %}
-  <p>
-    Olet kirjautunut nimellä {{ session.username }}
-  </p>
+  <p>Olet kirjautunut nimellä {{ session.username }}</p>
+      <h2>Omat kauppalistat</h2>
+      {% if own_shopping_lists %}
+      <ul>
+        {% for shopping_list in own_shopping_lists %}
+        <li><a href="/shopping_list/{{shopping_list.id}}">{{shopping_list.name}}</a></li>
+        {% endfor %}
+      </ul>
+      {% else %}
+        <p>Sinulla ei ole vielä kauppalistoja.</p>
+      {% endif %}
+  
+      <h2>Uusi kauppalista</h2>
+      <form action="{{ url_for('new_shopping_list') }}" method="post">
+          <input type="text" name="name" placeholder="Anna kauppalistan nimi">
+          <input type="password" name="password" placeholder="Anna salasana">
+          <button type="submit">Luo</button>
+      </form>
+  
+      <h2>Liity kauppalistaan</h2>
+      <form action="{{ url_for('join_shopping_list') }}" method="post">
+          <input type="text" name="shopping_list_id" placeholder="Anna kauppalistan nimi">
+          <input type="password" name="password" placeholder="salasana">
+          <button type="submit">Liity</button>
+      </form>
   {% endif %}
 
 <p>
