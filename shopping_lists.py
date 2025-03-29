@@ -20,9 +20,17 @@ def get_lists(user_id):
 
 def get_list(shopping_list_id):
     sql = """
-    SELECT name 
+    SELECT id, name 
     FROM shopping_list 
     WHERE id = ?;
     """
     result = db.query(sql, [shopping_list_id])
     return result[0]
+
+def get_items(shopping_list_id):
+    sql = """
+    SELECT id, name, quantity 
+    FROM item 
+    WHERE shopping_list_id = ?;
+    """
+    return db.query(sql, [shopping_list_id])

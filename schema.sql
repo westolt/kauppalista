@@ -23,5 +23,5 @@ CREATE TABLE item (
     name TEXT,
     quantity TEXT,
     shopping_list_id INTEGER REFERENCES shopping_list(id),
-    added_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    added_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
