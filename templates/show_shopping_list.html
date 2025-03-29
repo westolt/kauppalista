@@ -5,22 +5,24 @@
 </head>
 <body>
     <h1>{{ shopping_list.name }}</h1>
-
-    <!-- Tuotteiden lista -->
     <ul>
         {% for item in items %}
             <li>
                 {{ item.name }} - {{ item.quantity }}
+                <form action="{{ url_for('delete_item', shopping_list_id=shopping_list.id, item_id=item.id) }}" method="POST" style="display:inline;">
+                    <button type="submit">Poista</button>
+                </form>
             </li>
         {% endfor %}
     </ul>
-
-    <!-- Tuotteen lisäys -->
     <h2>Lisää tuote</h2>
     <form action="{{ url_for('add_item', shopping_list_id=shopping_list.id) }}" method="POST">
         <input type="text" name="name" placeholder="Tuotteen nimi" required>
         <input type="text" name="quantity" placeholder="Määrä" required>
         <button type="submit">Lisää</button>
     </form>
+    <p>
+      <a href="/">Takaisin</a>
+    </p>
 </body>
 </html>

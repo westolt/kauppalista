@@ -18,6 +18,15 @@ def index():
     own_shopping_lists = shopping_lists.get_lists(user_id)
     return render_template('index.html', own_shopping_lists=own_shopping_lists)
 
+@app.route("/shopping_list/<int:shopping_list_id>/delete_item/<int:item_id>", methods=["POST"])
+def delete_item(shopping_list_id, item_id):
+    sql = """
+    DELETE FROM item 
+    WHERE id = ? AND shopping_list_id = ?;
+    """
+    db.execute(sql, [item_id, shopping_list_id])
+    return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
+
 @app.route("/shopping_list/<int:shopping_list_id>/add_item", methods=["POST"])
 def add_item(shopping_list_id):
     name = request.form["name"]
