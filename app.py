@@ -18,6 +18,14 @@ def index():
     own_shopping_lists = shopping_lists.get_lists(user_id)
     return render_template('index.html', own_shopping_lists=own_shopping_lists)
 
+@app.route("/shopping_list/<int:shopping_list_id>")
+def show_shopping_list(shopping_list_id):
+    shopping_list = shopping_lists.get_list(shopping_list_id)
+    if shopping_list:
+        return render_template("show_shopping_list.html", shopping_list=shopping_list)
+    else:
+        return "Shopping list not found", 404
+
 @app.route("/new_shopping_list", methods=['POST'])
 def new_shopping_list():
     if 'user_id' not in session:

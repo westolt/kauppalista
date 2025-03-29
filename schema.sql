@@ -17,3 +17,11 @@ CREATE TABLE shopping_list_user (
     user_id INTEGER REFERENCES users(id),
     PRIMARY KEY (shopping_list_id, user_id)
 );
+
+CREATE TABLE item (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    quantity TEXT,
+    shopping_list_id INTEGER REFERENCES shopping_list(id),
+    added_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+);

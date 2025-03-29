@@ -11,9 +11,18 @@ def create_list(name, password_hash, creator_id):
 
 def get_lists(user_id):
     sql = """
-    SELECT s.id, s.name 
+    SELECT s.id, s.name
     FROM shopping_list s
     LEFT JOIN shopping_list_user slu ON s.id = slu.shopping_list_id
     WHERE s.creator_id = :user_id OR slu.user_id = :user_id
     """
     return db.query(sql, {"user_id": user_id})
+
+def get_list(shopping_list_id):
+    sql = """
+    SELECT name 
+    FROM shopping_list 
+    WHERE id = ?;
+    """
+    result = db.query(sql, [shopping_list_id])
+    return result[0]
