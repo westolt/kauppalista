@@ -29,8 +29,8 @@
   
       <h2>Liity kauppalistaan</h2>
       <form action="{{ url_for('join_shopping_list') }}" method="post">
-          <input type="text" name="shopping_list_id" placeholder="Anna kauppalistan nimi">
-          <input type="password" name="password" placeholder="salasana">
+          <input type="text" name="name" placeholder="Listan nimi">
+          <input type="password" name="password" placeholder="Salasana">
           <button type="submit">Liity</button>
       </form>
   {% endif %}

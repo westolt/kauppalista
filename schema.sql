@@ -13,9 +13,7 @@ CREATE TABLE shopping_list (
 );
 
 CREATE TABLE shopping_list_user (
-    shopping_list_id INTEGER,
-    user_id INTEGER,
-    PRIMARY KEY (shopping_list_id, user_id),
-    FOREIGN KEY (shopping_list_id) REFERENCES shopping_list(id),
-    FOREIGN KEY (user_id) REFERENCES user(id)
+    shopping_list_id INTEGER REFERENCES shopping_list(id),
+    user_id INTEGER REFERENCES users(id),
+    PRIMARY KEY (shopping_list_id, user_id)
 );

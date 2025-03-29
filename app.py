@@ -13,9 +13,8 @@ app.secret_key = config.secret_key
 def index():
     if 'username' not in session:
         return render_template("index.html")
-    
+
     user_id = session.get('user_id')
-    
     own_shopping_lists = shopping_lists.get_lists(user_id)
     return render_template('index.html', own_shopping_lists=own_shopping_lists)
 
@@ -23,7 +22,7 @@ def index():
 def new_shopping_list():
     if 'user_id' not in session:
         return redirect("/login")
-    
+
     name = request.form['name']
     creator_id = session['user_id']
     password = request.form["password"]
@@ -36,27 +35,33 @@ def new_shopping_list():
 
 @app.route('/join_shopping_list', methods=['POST'])
 def join_shopping_list():
-    shopping_list_id = request.form['shopping_list_id']
+    if 'user_id' not in session:
+        return redirect("/login")
+
+    name = request.form['name']
     password = request.form['password']
     user_id = session['user_id']
 
-    sql = "SELECT password FROM shopping_list WHERE id = ?"
-    result = db.query(sql, [shopping_list_id])
-    
+    sql = "SELECT id, password FROM shopping_list WHERE name = ?"
+    result = db.query(sql, [name])
+
     if not result:
-        return "VIRHE: kauppalistaa ei löydy", 401
-    
-    password_hash = result[0][0]
-    
+        return "VIRHE: kauppalistaa ei löydy"
+
+    shopping_list_id = result[0][0]
+    password_hash = result[0][1]
+
     if check_password_hash(password_hash, password):
         try:
-            db.execute("INSERT INTO shopping_list_user (shopping_list_id, user_id) VALUES (?, ?)", 
-                      (shopping_list_id, user_id))
+            db.execute("""
+                INSERT INTO shopping_list_user (shopping_list_id, user_id) 
+                VALUES (?, ?)
+            """, (shopping_list_id, user_id))
             return redirect("/")
         except sqlite3.IntegrityError:
             return "VIRHE: olet jo liittynyt tähän kauppalistaan"
     else:
-        return "VIRHE: väärä salasana", 401
+        return "VIRHE: väärä salasana"
 
 @app.route("/register")
 def register():
@@ -87,12 +92,18 @@ def login():
 
     username = request.form.get("username")
     password = request.form.get("password")
+
+    sql = "SELECT id, password_hash FROM users WHERE username = ?"
+    result = db.query(sql, [username])
+
+    if not result:
+        return "VIRHE: väärä tunnus tai salasana"
     
-    sql = "SELECT password_hash FROM users WHERE username = ?"
-    password_hash = db.query(sql, [username])[0][0]
+    user_id, password_hash = result[0]
 
     if check_password_hash(password_hash, password):
         session["username"] = username
+        session["user_id"] = user_id
         return redirect("/")
     else:
         return "VIRHE: väärä tunnus tai salasana"
