@@ -18,6 +18,30 @@ def index():
     own_shopping_lists = shopping_lists.get_lists(user_id)
     return render_template('index.html', own_shopping_lists=own_shopping_lists)
 
+@app.route("/shopping_list/<int:shopping_list_id>/edit_item/<int:item_id>", methods=["GET", "POST"])
+def edit_item(shopping_list_id, item_id):
+    if request.method == "POST":
+        name = request.form["name"]
+        quantity = request.form["quantity"]
+        sql = """
+        UPDATE item 
+        SET name = ?, quantity = ? 
+        WHERE id = ? AND shopping_list_id = ?;
+        """
+        db.execute(sql, [name, quantity, item_id, shopping_list_id])
+        return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
+    else:
+        sql = """
+        SELECT id, name, quantity 
+        FROM item 
+        WHERE id = ? AND shopping_list_id = ?;
+        """
+        item = db.query(sql, [item_id, shopping_list_id])
+        if item:
+            return render_template("edit_item.html", item=item[0], shopping_list_id=shopping_list_id)
+        else:
+            return "Item not found", 404
+
 @app.route("/shopping_list/<int:shopping_list_id>/delete_item/<int:item_id>", methods=["POST"])
 def delete_item(shopping_list_id, item_id):
     sql = """
@@ -47,13 +71,13 @@ def show_shopping_list(shopping_list_id):
     else:
         return "Shopping list not found", 404
 
-@app.route("/new_shopping_list", methods=['POST'])
+@app.route("/new_shopping_list", methods=["POST"])
 def new_shopping_list():
-    if 'user_id' not in session:
+    if "user_id" not in session:
         return redirect("/login")
 
-    name = request.form['name']
-    creator_id = session['user_id']
+    name = request.form["name"]
+    creator_id = session["user_id"]
     password = request.form["password"]
     
     password_hash = generate_password_hash(password)
@@ -62,14 +86,14 @@ def new_shopping_list():
         
     return redirect("/")
 
-@app.route('/join_shopping_list', methods=['POST'])
+@app.route("/join_shopping_list", methods=["POST"])
 def join_shopping_list():
-    if 'user_id' not in session:
+    if "user_id" not in session:
         return redirect("/login")
 
-    name = request.form['name']
-    password = request.form['password']
-    user_id = session['user_id']
+    name = request.form["name"]
+    password = request.form["password"]
+    user_id = session["user_id"]
 
     sql = "SELECT id, password FROM shopping_list WHERE name = ?"
     result = db.query(sql, [name])

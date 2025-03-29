@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Muokkaa tuotetta</title>
+</head>
+<body>
+    <h1>Muokkaa tuotetta</h1>
+    <form action="{{ url_for('edit_item', shopping_list_id=shopping_list_id, item_id=item.id) }}" method="POST">
+        <input type="text" name="name" value="{{ item.name }}" required>
+        <input type="text" name="quantity" value="{{ item.quantity }}" required>
+        <button type="submit">Tallenna</button>
+    </form>
+    <a href="{{ url_for('show_shopping_list', shopping_list_id=shopping_list_id) }}">Peruuta</a>
+</body>
+</html>
