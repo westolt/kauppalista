@@ -9,59 +9,46 @@ import shopping_lists
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+# Render the front page
 @app.route("/")
 def index():
-    if 'username' not in session:
+    if "username" not in session:
         return render_template("index.html")
 
-    user_id = session.get('user_id')
+    user_id = session.get("user_id")
     own_shopping_lists = shopping_lists.get_lists(user_id)
-    return render_template('index.html', own_shopping_lists=own_shopping_lists)
+    return render_template("index.html", own_shopping_lists=own_shopping_lists)
 
+# Edit item in shopping list
 @app.route("/shopping_list/<int:shopping_list_id>/edit_item/<int:item_id>", methods=["GET", "POST"])
 def edit_item(shopping_list_id, item_id):
     if request.method == "POST":
         name = request.form["name"]
         quantity = request.form["quantity"]
-        sql = """
-        UPDATE item 
-        SET name = ?, quantity = ? 
-        WHERE id = ? AND shopping_list_id = ?;
-        """
-        db.execute(sql, [name, quantity, item_id, shopping_list_id])
+        shopping_lists.update_item(name, quantity, item_id, shopping_list_id)
         return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
     else:
-        sql = """
-        SELECT id, name, quantity 
-        FROM item 
-        WHERE id = ? AND shopping_list_id = ?;
-        """
-        item = db.query(sql, [item_id, shopping_list_id])
+        item = shopping_lists.get_item(item_id, shopping_list_id)
         if item:
             return render_template("edit_item.html", item=item[0], shopping_list_id=shopping_list_id)
         else:
             return "Item not found", 404
 
+# Remove item from shopping list
 @app.route("/shopping_list/<int:shopping_list_id>/delete_item/<int:item_id>", methods=["POST"])
 def delete_item(shopping_list_id, item_id):
-    sql = """
-    DELETE FROM item 
-    WHERE id = ? AND shopping_list_id = ?;
-    """
-    db.execute(sql, [item_id, shopping_list_id])
+    shopping_lists.delete_item(item_id, shopping_list_id)
     return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
 
+# Add item to shopping list
 @app.route("/shopping_list/<int:shopping_list_id>/add_item", methods=["POST"])
 def add_item(shopping_list_id):
     name = request.form["name"]
     quantity = request.form["quantity"]
-    sql = """
-    INSERT INTO item (name, quantity, shopping_list_id) 
-    VALUES (?, ?, ?);
-    """
-    db.execute(sql, [name, quantity, shopping_list_id])
+    shopping_lists.add_item_to_list(name, quantity, shopping_list_id)
     return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
 
+# View shopping list
 @app.route("/shopping_list/<int:shopping_list_id>")
 def show_shopping_list(shopping_list_id):
     shopping_list = shopping_lists.get_list(shopping_list_id)
@@ -71,6 +58,7 @@ def show_shopping_list(shopping_list_id):
     else:
         return "Shopping list not found", 404
 
+#Create a new shopping list
 @app.route("/new_shopping_list", methods=["POST"])
 def new_shopping_list():
     if "user_id" not in session:
@@ -86,6 +74,7 @@ def new_shopping_list():
         
     return redirect("/")
 
+#Join another user's list
 @app.route("/join_shopping_list", methods=["POST"])
 def join_shopping_list():
     if "user_id" not in session:
@@ -95,8 +84,7 @@ def join_shopping_list():
     password = request.form["password"]
     user_id = session["user_id"]
 
-    sql = "SELECT id, password FROM shopping_list WHERE name = ?"
-    result = db.query(sql, [name])
+    result = shopping_lists.get_list_by_name(name)
 
     if not result:
         return "VIRHE: kauppalistaa ei löydy"
@@ -106,20 +94,19 @@ def join_shopping_list():
 
     if check_password_hash(password_hash, password):
         try:
-            db.execute("""
-                INSERT INTO shopping_list_user (shopping_list_id, user_id) 
-                VALUES (?, ?)
-            """, (shopping_list_id, user_id))
+            shopping_lists.join_list(shopping_list_id, user_id)
             return redirect("/")
         except sqlite3.IntegrityError:
             return "VIRHE: olet jo liittynyt tähän kauppalistaan"
     else:
         return "VIRHE: väärä salasana"
 
+#Redirect to registration page
 @app.route("/register")
 def register():
     return render_template("register.html")
 
+#Create a new user
 @app.route("/create", methods=["POST"])
 def create():
     username = request.form["username"]
@@ -131,23 +118,22 @@ def create():
     password_hash = generate_password_hash(password1)
 
     try:
-        sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
-        db.execute(sql, [username, password_hash])
+        shopping_lists.create_user(username, password_hash)
     except sqlite3.IntegrityError:
         return "VIRHE: tunnus on jo varattu"
 
     return "Tunnus luotu"
 
+#Login
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        return render_template("login.html")
+        return render_template("login.html") 
 
     username = request.form.get("username")
     password = request.form.get("password")
 
-    sql = "SELECT id, password_hash FROM users WHERE username = ?"
-    result = db.query(sql, [username])
+    result = shopping_lists.log_in(username)
 
     if not result:
         return "VIRHE: väärä tunnus tai salasana"
@@ -161,7 +147,7 @@ def login():
     else:
         return "VIRHE: väärä tunnus tai salasana"
 
-
+#Logout
 @app.route("/logout")
 def logout():
     del session["username"]
