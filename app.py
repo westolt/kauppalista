@@ -87,8 +87,8 @@ def join_shopping_list():
     result = shopping_lists.get_list_by_name(name)
 
     if not result:
-        return "VIRHE: kauppalistaa ei löydy"
-
+        return redirect(url_for("error", message="Kauppalistaa ei löydy"))
+    
     shopping_list_id = result[0][0]
     password_hash = result[0][1]
 
@@ -97,9 +97,9 @@ def join_shopping_list():
             shopping_lists.join_list(shopping_list_id, user_id)
             return redirect("/")
         except sqlite3.IntegrityError:
-            return "VIRHE: olet jo liittynyt tähän kauppalistaan"
+            return redirect(url_for("error", message="Olet jo liittynyt tähän kauppalistaan"))
     else:
-        return "VIRHE: väärä salasana"
+        return redirect(url_for("error", message="Väärä salasana"))
 
 #Redirect to registration page
 @app.route("/register")
@@ -114,15 +114,15 @@ def create():
     password2 = request.form["password2"]
 
     if password1 != password2:
-        return "VIRHE: salasanat eivät ole samat"
+        return redirect(url_for("error", message="Salasanat eivät ole samat"))
     password_hash = generate_password_hash(password1)
 
     try:
         shopping_lists.create_user(username, password_hash)
     except sqlite3.IntegrityError:
-        return "VIRHE: tunnus on jo varattu"
+        return redirect(url_for("error", message="Tunnus on jo varattu"))
 
-    return "Tunnus luotu"
+    return redirect(url_for("account_created"))
 
 #Login
 @app.route("/login", methods=["GET", "POST"])
@@ -136,7 +136,7 @@ def login():
     result = shopping_lists.log_in(username)
 
     if not result:
-        return "VIRHE: väärä tunnus tai salasana"
+        return redirect(url_for("error", message="Väärä tunnus tai salasana"))
     
     user_id, password_hash = result[0]
 
@@ -145,10 +145,21 @@ def login():
         session["user_id"] = user_id
         return redirect("/")
     else:
-        return "VIRHE: väärä tunnus tai salasana"
+        return redirect(url_for("error", message="Väärä tunnus tai salasana"))
 
 #Logout
 @app.route("/logout")
 def logout():
     del session["username"]
     return redirect("/")
+
+# Account created message
+@app.route("/account_created")
+def account_created():
+    return render_template("account_created.html")
+
+#Error message
+@app.route("/error")
+def error():
+    message = request.args.get("message", "Tuntematon virhe")
+    return render_template("error.html", message=message)
