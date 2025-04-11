@@ -53,10 +53,10 @@ def add_item(shopping_list_id):
 def show_shopping_list(shopping_list_id):
     shopping_list = shopping_lists.get_list(shopping_list_id)
     items = shopping_lists.get_items(shopping_list_id)
-    if shopping_list:
-        return render_template("show_shopping_list.html", shopping_list=shopping_list, items=items)
-    else:
-        return "Shopping list not found", 404
+    shopping_list_users = shopping_lists.get_users(shopping_list_id)
+    
+    return render_template("show_shopping_list.html", shopping_list=shopping_list, items=items, shopping_list_users=shopping_list_users)
+
 
 #Create a new shopping list
 @app.route("/new_shopping_list", methods=["POST"])
@@ -67,11 +67,11 @@ def new_shopping_list():
     name = request.form["name"]
     creator_id = session["user_id"]
     password = request.form["password"]
-    
+
     password_hash = generate_password_hash(password)
 
     shopping_lists.create_list(name, password_hash, creator_id)
-        
+
     return redirect("/")
 
 #Join another user's list
@@ -88,7 +88,7 @@ def join_shopping_list():
 
     if not result:
         return redirect(url_for("error", message="Kauppalistaa ei löydy"))
-    
+
     shopping_list_id = result[0][0]
     password_hash = result[0][1]
 
@@ -137,7 +137,7 @@ def login():
 
     if not result:
         return redirect(url_for("error", message="Väärä tunnus tai salasana"))
-    
+
     user_id, password_hash = result[0]
 
     if check_password_hash(password_hash, password):

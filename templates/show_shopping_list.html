@@ -22,6 +22,12 @@
         <input type="text" name="quantity" placeholder="Määrä" required>
         <button type="submit">Lisää</button>
     </form>
+    <h3>Käyttäjät</h3>
+    <ul>
+        {% for user in shopping_list_users %}
+            <li><a href="/user/{{ user.id }}">{{ user.username }}</a></li>
+        {% endfor %}
+    </ul>
     <p>
       <a href="/">Takaisin</a>
     </p>

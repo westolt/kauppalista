@@ -66,3 +66,12 @@ def get_items(shopping_list_id):
     WHERE shopping_list_id = ?;
     """
     return db.query(sql, [shopping_list_id])
+
+def get_users(shopping_list_id):
+    sql = """
+    SELECT u.id, u.username
+    FROM users u
+    JOIN shopping_list_user slu ON u.id = slu.user_id
+    WHERE slu.shopping_list_id = ?;
+    """
+    return db.query(sql, [shopping_list_id])
