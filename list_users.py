@@ -27,3 +27,12 @@ def total(user_id, shopping_list_id):
     """
     result = db.query(sql, [user_id, shopping_list_id])
     return result[0]["total_price"] if result and result[0]["total_price"] else 0
+
+def overall_total(shopping_list_id):
+    sql = """
+    SELECT SUM(price) as overall_total_price
+    FROM purchased_item
+    WHERE shopping_list_id = ?;
+    """
+    result = db.query(sql, [shopping_list_id])
+    return result[0]['overall_total_price'] if result and result[0]['overall_total_price'] else 0

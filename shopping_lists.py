@@ -95,3 +95,12 @@ def get_users(shopping_list_id):
     WHERE slu.shopping_list_id = ?;
     """
     return db.query(sql, [shopping_list_id])
+
+def get_users_count(shopping_list_id):
+    sql = """
+    SELECT COUNT(DISTINCT user_id) as users_count
+    FROM shopping_list_user
+    WHERE shopping_list_id = ?;
+    """
+    result = db.query(sql, [shopping_list_id])
+    return result[0]['users_count'] if result else 0

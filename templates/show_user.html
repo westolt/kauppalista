@@ -4,8 +4,7 @@
     <title>{{ user.username }}</title>
 </head>
 <body>
-    <h1>{{ user.username }} - ostokset listalta: {{ shopping_list.name }}</h1>
-    <h2>Ostetut tuotteet:</h2>
+    <h1>Käyttäjän {{ user.username }} - ostokset listalta: {{ shopping_list.name }}</h1>
     <ul>
       {% for item in purchased_items %}
         <li>
@@ -18,6 +17,13 @@
     
     {% if purchased_items %}
     <h3>Yhteensä: {{ total_price }}€</h3>
+    {% endif %}
+
+    {% if overall_total_price is not none %}
+    <h3>Kaikkien käyttäjien maksamat tuotteet yhteensä: {{ overall_total_price }}€</h3>
+    {% if overall_total_price > 0 %}
+    <h3>{{ user.username }} on maksanut {{ "%.2f"|format((total_price / overall_total_price) * 100) }}% kokonaissummasta</h3>
+    {% endif %}
     {% endif %}
     
     <p>

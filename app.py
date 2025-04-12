@@ -30,7 +30,13 @@ def show_user(user_id):
     purchased_items = list_users.purchased_items_by_user(user_id, shopping_list_id)
     total_price = list_users.total(user_id, shopping_list_id)
 
-    return render_template("show_user.html", user=user, shopping_list=shopping_list, shopping_list_id=shopping_list_id, purchased_items=purchased_items, total_price=total_price)
+    overall_total_price = None
+    
+    users_count = shopping_lists.get_users_count(shopping_list_id)
+    if users_count > 1:
+        overall_total_price = list_users.overall_total(shopping_list_id)
+
+    return render_template("show_user.html", user=user, shopping_list=shopping_list, shopping_list_id=shopping_list_id, purchased_items=purchased_items, total_price=total_price, overall_total_price=overall_total_price)
 
 # Buy item from shopping list
 @app.route("/shopping_list/<int:shopping_list_id>/buy_item/<int:item_id>", methods=["GET", "POST"])
@@ -43,7 +49,7 @@ def buy_item(shopping_list_id, item_id):
             item = shopping_lists.get_item(item_id, shopping_list_id)
             users = shopping_lists.get_users(shopping_list_id)
             return render_template("buy_item.html", item=item[0], shopping_list_id=shopping_list_id, users=users, error=error)
-        
+
         shopping_lists.buy_item(price, buyer, item_id, shopping_list_id)
         return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
     else:
