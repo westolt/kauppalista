@@ -8,14 +8,16 @@ def create_user(username, password_hash):
     sql = "INSERT INTO users (username, password_hash) VALUES (?, ?);"
     db.execute(sql, [username, password_hash])
 
-def create_list(name, password_hash, creator_id):
-    sql = "INSERT INTO shopping_list (name, password, creator_id) VALUES (?, ?, ?);"
-    db.execute(sql, [name, password_hash, creator_id])
+def create_list(name, password_hash, user_id):
+    sql = "INSERT INTO shopping_list (name, password) VALUES (?, ?);"
+    db.execute(sql, [name, password_hash])
 
-    shopping_list_id = db.execute("SELECT last_insert_rowid()")
+    shopping_list_id = db.last_insert_id()
 
     sql_user = "INSERT INTO shopping_list_user (shopping_list_id, user_id) VALUES (?, ?);"
-    db.execute(sql_user, [shopping_list_id, creator_id])
+    db.execute(sql_user, [shopping_list_id, user_id])
+
+    return shopping_list_id
 
 def get_list_by_name(name):
     sql = "SELECT id, password FROM shopping_list WHERE name = ?;"
@@ -25,14 +27,18 @@ def join_list(shopping_list_id, user_id):
     sql = "INSERT INTO shopping_list_user (shopping_list_id, user_id) VALUES (?, ?);"
     db.execute(sql, [shopping_list_id, user_id])
 
+def remove_user_from_list(user_id, shopping_list_id):
+    sql = "DELETE FROM shopping_list_user WHERE shopping_list_id = ? AND user_id = ?;"
+    db.execute(sql, [shopping_list_id, user_id])
+
 def get_lists(user_id):
     sql = """
     SELECT s.id, s.name
     FROM shopping_list s
-    LEFT JOIN shopping_list_user slu ON s.id = slu.shopping_list_id
-    WHERE s.creator_id = ? OR slu.user_id = ?;
+    JOIN shopping_list_user slu ON s.id = slu.shopping_list_id
+    WHERE slu.user_id = ?;
     """
-    return db.query(sql, [user_id, user_id])
+    return db.query(sql, [user_id])
 
 def get_list(shopping_list_id):
     sql = """

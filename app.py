@@ -48,33 +48,43 @@ def add_item(shopping_list_id):
     shopping_lists.add_item_to_list(name, quantity, shopping_list_id)
     return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
 
+# Leave shopping list
+@app.route("/leave_shopping_list", methods=["POST"])
+def leave_shopping_list():
+    if "user_id" not in session:
+        return redirect("/login")
+
+    user_id = session["user_id"]
+    shopping_list_id = request.form.get("shopping_list_id")
+    shopping_lists.remove_user_from_list(user_id, shopping_list_id)
+    return redirect("/")
+
 # View shopping list
 @app.route("/shopping_list/<int:shopping_list_id>")
 def show_shopping_list(shopping_list_id):
     shopping_list = shopping_lists.get_list(shopping_list_id)
     items = shopping_lists.get_items(shopping_list_id)
     shopping_list_users = shopping_lists.get_users(shopping_list_id)
-    
+
     return render_template("show_shopping_list.html", shopping_list=shopping_list, items=items, shopping_list_users=shopping_list_users)
 
 
-#Create a new shopping list
+# Create a new shopping list
 @app.route("/new_shopping_list", methods=["POST"])
 def new_shopping_list():
     if "user_id" not in session:
         return redirect("/login")
 
     name = request.form["name"]
-    creator_id = session["user_id"]
     password = request.form["password"]
-
+    user_id = session["user_id"]
     password_hash = generate_password_hash(password)
 
-    shopping_lists.create_list(name, password_hash, creator_id)
+    shopping_lists.create_list(name, password_hash, user_id)
 
     return redirect("/")
 
-#Join another user's list
+# Join another user's list
 @app.route("/join_shopping_list", methods=["POST"])
 def join_shopping_list():
     if "user_id" not in session:
@@ -101,12 +111,12 @@ def join_shopping_list():
     else:
         return redirect(url_for("error", message="Väärä salasana"))
 
-#Redirect to registration page
+# Redirect to registration page
 @app.route("/register")
 def register():
     return render_template("register.html")
 
-#Create a new user
+# Create a new user
 @app.route("/create", methods=["POST"])
 def create():
     username = request.form["username"]
@@ -124,7 +134,7 @@ def create():
 
     return redirect(url_for("account_created"))
 
-#Login
+# Login
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
@@ -147,7 +157,7 @@ def login():
     else:
         return redirect(url_for("error", message="Väärä tunnus tai salasana"))
 
-#Logout
+# Logout
 @app.route("/logout")
 def logout():
     del session["username"]
@@ -158,7 +168,7 @@ def logout():
 def account_created():
     return render_template("account_created.html")
 
-#Error message
+# Error message
 @app.route("/error")
 def error():
     message = request.args.get("message", "Tuntematon virhe")

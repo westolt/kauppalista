@@ -13,7 +13,13 @@
       {% if own_shopping_lists %}
       <ul>
         {% for shopping_list in own_shopping_lists %}
-        <li><a href="/shopping_list/{{shopping_list.id}}">{{shopping_list.name}}</a></li>
+        <li>
+          <a href="/shopping_list/{{shopping_list.id}}">{{shopping_list.name}}</a>
+          <form action="/leave_shopping_list" method="post" style="display: inline;">
+            <input type="hidden" name="shopping_list_id" value="{{shopping_list.id}}">
+            <button type="submit">Poistu listasta</button>
+          </form>
+        </li>
         {% endfor %}
       </ul>
       {% else %}
