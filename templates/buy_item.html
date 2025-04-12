@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Buy Item</title>
+    <title>Merkitse ostetuksi</title>
 </head>
 <body>
-    <h1>Buy Item</h1>
+    <h1>Merkitse ostetuksi</h1>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
     <form method="POST">
         <p>Tuote: {{ item.name }}</p>
         <p>Määrä: {{ item.quantity }}</p>
@@ -19,7 +22,7 @@
             {% endfor %}
         </select>
         <br>
-        <button type="submit">Merkitse ostetuksi</button>
+        <button type="submit">Tallenna</button>
     </form>
     <p>
        <a href="/shopping_list/{{ shopping_list_id }}">Takaisin</a>

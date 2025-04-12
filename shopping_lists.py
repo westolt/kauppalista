@@ -76,14 +76,14 @@ def get_items(shopping_list_id):
 def buy_item(price, buyer, item_id, shopping_list_id):
     item_sql = "SELECT name, quantity FROM item WHERE id = ? AND shopping_list_id = ?"
     item = db.query(item_sql, [item_id, shopping_list_id])[0]
-    
+
     insert_sql = """
-    INSERT INTO purchased_item 
+    INSERT INTO purchased_item
     (name, quantity, shopping_list_id, purchased_by_user_id, price)
     VALUES (?, ?, ?, ?, ?)
     """
-    db.execute(insert_sql, [item['name'], item['quantity'], shopping_list_id, buyer, price])
-    
+    db.execute(insert_sql, [item["name"], item["quantity"], shopping_list_id, buyer, price])
+
     delete_sql = "DELETE FROM item WHERE id = ? AND shopping_list_id = ?"
     db.execute(delete_sql, [item_id, shopping_list_id])
 

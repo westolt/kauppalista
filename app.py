@@ -6,6 +6,7 @@ import config
 import db
 import shopping_lists
 import list_users
+import re
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -37,6 +38,12 @@ def buy_item(shopping_list_id, item_id):
     if request.method == "POST":
         price = request.form["price"]
         buyer = request.form["purchased_by_user_id"]
+        if not re.match(r'^\d{1,5}(\.\d{1,2})?$', price) or float(price) < 0 or float(price) > 10000:
+            error = "Anna kelvollinen hinta väliltä 0 - 10000, enintään kaksi desimaalia. Erota desimaalit pisteellä (esim: 10.55)"
+            item = shopping_lists.get_item(item_id, shopping_list_id)
+            users = shopping_lists.get_users(shopping_list_id)
+            return render_template("buy_item.html", item=item[0], shopping_list_id=shopping_list_id, users=users, error=error)
+        
         shopping_lists.buy_item(price, buyer, item_id, shopping_list_id)
         return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
     else:
