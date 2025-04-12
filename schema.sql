@@ -17,22 +17,26 @@ CREATE TABLE shopping_list_user (
     PRIMARY KEY (shopping_list_id, user_id)
 );
 
-CREATE TABLE item (
-    id INTEGER PRIMARY KEY,
-    name TEXT,
-    quantity TEXT,
-    shopping_list_id INTEGER REFERENCES shopping_list(id),
-    for_user_id INTEGER REFERENCES users(id),
-    added_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE category (
     id INTEGER PRIMARY KEY,
     name TEXT UNIQUE NOT NULL
 );
 
-CREATE TABLE item_category (
-    item_id INTEGER REFERENCES item(id),
+CREATE TABLE item (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    quantity TEXT,
+    shopping_list_id INTEGER REFERENCES shopping_list(id),
     category_id INTEGER REFERENCES category(id),
-    PRIMARY KEY (item_id, category_id)
+    added_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE purchased_item (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    quantity TEXT,
+    shopping_list_id INTEGER REFERENCES shopping_list(id),
+    purchased_by_user_id INTEGER REFERENCES users(id),
+    price DECIMAL(10, 2),
+    purchase_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

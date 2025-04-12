@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import config
 import db
 import shopping_lists
+import list_users
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -18,6 +19,33 @@ def index():
     user_id = session.get("user_id")
     own_shopping_lists = shopping_lists.get_lists(user_id)
     return render_template("index.html", own_shopping_lists=own_shopping_lists)
+
+# Show user
+@app.route("/user/<int:user_id>")
+def show_user(user_id):
+    user = list_users.get_user(user_id)
+    shopping_list_id = request.args.get("shopping_list_id")
+    shopping_list = shopping_lists.get_list(shopping_list_id)
+    purchased_items = list_users.purchased_items_by_user(user_id, shopping_list_id)
+    total_price = list_users.total(user_id, shopping_list_id)
+
+    return render_template("show_user.html", user=user, shopping_list=shopping_list, shopping_list_id=shopping_list_id, purchased_items=purchased_items, total_price=total_price)
+
+# Buy item from shopping list
+@app.route("/shopping_list/<int:shopping_list_id>/buy_item/<int:item_id>", methods=["GET", "POST"])
+def buy_item(shopping_list_id, item_id):
+    if request.method == "POST":
+        price = request.form["price"]
+        buyer = request.form["purchased_by_user_id"]
+        shopping_lists.buy_item(price, buyer, item_id, shopping_list_id)
+        return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
+    else:
+        item = shopping_lists.get_item(item_id, shopping_list_id)
+        users = shopping_lists.get_users(shopping_list_id)
+        if item:
+            return render_template("buy_item.html", item=item[0], shopping_list_id=shopping_list_id, users=users)
+        else:
+            return "Item not found", 404
 
 # Edit item in shopping list
 @app.route("/shopping_list/<int:shopping_list_id>/edit_item/<int:item_id>", methods=["GET", "POST"])

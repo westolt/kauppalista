@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ user.username }}</title>
+</head>
+<body>
+    <h1>{{ user.username }} - ostokset listalta {{ shopping_list.name }}</h1>
+    <h2>Ostetut tuotteet:</h2>
+    <ul>
+      {% for item in purchased_items %}
+        <li>
+          {{ item.name }} - {{ item.quantity }} - {{ item.price }}€
+        </li>
+      {% else %}
+        <li>Ei ostettuja tuotteita</li>
+      {% endfor %}
+    </ul>
+    
+    {% if purchased_items %}
+    <h3>Yhteensä: {{ total_price }}€</h3>
+    {% endif %}
+    
+    <p>
+      <a href="/shopping_list/{{ shopping_list_id }}">Takaisin</a>
+    </p>
+</body>
+</html>
