@@ -11,7 +11,9 @@
     - Käyttäjän maksaman tuotteen hinta, määrä ja ostoaika.
     - Jos listalla on useita jäseniä, profiiliin lasketaan automaattisesti käyttäjän osuus prosentteina kaikkien käyttäjien ostoksista.
 *  Eri listoilla on omat käyttäjäsivut eli ostetut tuotteet eivät mene eri listojen kesken sekaisin.
+*  Käyttäjä pystyy valitsemaan tuotteelle luokitteluksi tuoteryhmän (elintarvikkeet, käyttötavarat, muut). 
 
 # Omat kehitysideat
-*  Käyttäjä pystyy valitsemaan tuotteelle luokitteluksi tuoteryhmän (elintarvikkeet, käyttötavarat... jne). Listan pystyy järjestämään tuoteryhmien perusteella.
-*  Käyttäjä pystyy kommentoimaan listalla olevia tuotteita (Esim voisi olla hyvä kommentti "Ostan tänään töiden jälkeen").
+*  Listan pystyy järjestämään tuoteryhmien perusteella.
+*  Käyttäjäsivu voisi näyttää montako tuotetta käyttäjä on ostanut mistäkin tuoteryhmästä.
+*  Käyttäjät pystyisivät jotenkin kommunikoimaan keskenään ostoksista (Vaikka keskustelu pohja johon kaikki voisivat kommentoida vapaasti. Esim: "Ostan tuotteen x töiden jälkeen" ettei tapahdu sekaannuksia.).
