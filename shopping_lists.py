@@ -49,9 +49,9 @@ def get_list(shopping_list_id):
     result = db.query(sql, [shopping_list_id])
     return result[0]
 
-def add_item_to_list(name, quantity, shopping_list_id):
-    sql = "INSERT INTO item (name, quantity, shopping_list_id) VALUES (?, ?, ?);"
-    db.execute(sql, [name, quantity, shopping_list_id])
+def add_item_to_list(name, quantity, category_id, shopping_list_id):
+    sql = "INSERT INTO item (name, quantity, category_id, shopping_list_id) VALUES (?, ?, ?, ?);"
+    db.execute(sql, [name, quantity, category_id, shopping_list_id])
 
 def delete_item(item_id, shopping_list_id):
     sql = "DELETE FROM item WHERE id = ? AND shopping_list_id = ?;"
@@ -95,6 +95,10 @@ def get_users(shopping_list_id):
     WHERE slu.shopping_list_id = ?;
     """
     return db.query(sql, [shopping_list_id])
+
+def get_categories():
+    sql = "SELECT name FROM categories ORDER BY name;"
+    return db.execute(sql)
 
 def get_users_count(shopping_list_id):
     sql = """

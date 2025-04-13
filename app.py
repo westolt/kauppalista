@@ -31,7 +31,7 @@ def show_user(user_id):
     total_price = list_users.total(user_id, shopping_list_id)
 
     overall_total_price = None
-    
+
     users_count = shopping_lists.get_users_count(shopping_list_id)
     if users_count > 1:
         overall_total_price = list_users.overall_total(shopping_list_id)
@@ -86,7 +86,8 @@ def delete_item(shopping_list_id, item_id):
 def add_item(shopping_list_id):
     name = request.form["name"]
     quantity = request.form["quantity"]
-    shopping_lists.add_item_to_list(name, quantity, shopping_list_id)
+    category_id = request.form["category_id"]
+    shopping_lists.add_item_to_list(name, quantity, category_id, shopping_list_id)
     return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
 
 # Leave shopping list
@@ -106,8 +107,9 @@ def show_shopping_list(shopping_list_id):
     shopping_list = shopping_lists.get_list(shopping_list_id)
     items = shopping_lists.get_items(shopping_list_id)
     shopping_list_users = shopping_lists.get_users(shopping_list_id)
+    categories = shopping_lists.get_categories()
 
-    return render_template("show_shopping_list.html", shopping_list=shopping_list, items=items, shopping_list_users=shopping_list_users)
+    return render_template("show_shopping_list.html", shopping_list=shopping_list, items=items, shopping_list_users=shopping_list_users, categories=categories)
 
 
 # Create a new shopping list

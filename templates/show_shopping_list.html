@@ -21,6 +21,11 @@
     <form action="{{ url_for('add_item', shopping_list_id=shopping_list.id) }}" method="POST">
         <input type="text" name="name" placeholder="Tuotteen nimi" required>
         <input type="text" name="quantity" placeholder="Määrä" required>
+        Tuoteryhmät<select name="category_id" required>
+            <option value="1">Elintarvike</option>
+            <option value="2">Käyttötarvike</option>
+            <option value="3">Muu</option>
+        </select>
         <button type="submit">Lisää</button>
     </form>
     <h3>Käyttäjät</h3>
