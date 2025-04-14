@@ -41,7 +41,7 @@ CREATE TABLE purchased_item (
     purchase_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT OR IGNORE INTO categories (name) VALUES 
+INSERT OR IGNORE INTO categories (name) VALUES
 ('Elintarvikkeet'),
 ('Käyttötavarat'),
 ('Muut');

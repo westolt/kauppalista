@@ -66,7 +66,8 @@ def edit_item(shopping_list_id, item_id):
     if request.method == "POST":
         name = request.form["name"]
         quantity = request.form["quantity"]
-        shopping_lists.update_item(name, quantity, item_id, shopping_list_id)
+        category_id = request.form["category_id"]
+        shopping_lists.update_item(name, quantity, item_id, category_id, shopping_list_id)
         return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
     else:
         item = shopping_lists.get_item(item_id, shopping_list_id)

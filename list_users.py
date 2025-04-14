@@ -35,4 +35,4 @@ def overall_total(shopping_list_id):
     WHERE shopping_list_id = ?;
     """
     result = db.query(sql, [shopping_list_id])
-    return result[0]['overall_total_price'] if result and result[0]['overall_total_price'] else 0
+    return result[0]["overall_total_price"] if result and result[0]["overall_total_price"] else 0

@@ -57,9 +57,9 @@ def delete_item(item_id, shopping_list_id):
     sql = "DELETE FROM item WHERE id = ? AND shopping_list_id = ?;"
     db.execute(sql, [item_id, shopping_list_id])
 
-def update_item(name, quantity, item_id, shopping_list_id):
-    sql = "UPDATE item SET name = ?, quantity = ? WHERE id = ? AND shopping_list_id = ?;"
-    db.execute(sql, [name, quantity, item_id, shopping_list_id])
+def update_item(name, quantity, item_id, category_id, shopping_list_id):
+    sql = "UPDATE item SET name = ?, quantity = ?, category_id = ? WHERE id = ? AND shopping_list_id = ?;"
+    db.execute(sql, [name, quantity, category_id, item_id, shopping_list_id])
 
 def get_item(item_id, shopping_list_id):
     sql = "SELECT id, name, quantity FROM item WHERE id = ? AND shopping_list_id = ?;"
@@ -107,4 +107,4 @@ def get_users_count(shopping_list_id):
     WHERE shopping_list_id = ?;
     """
     result = db.query(sql, [shopping_list_id])
-    return result[0]['users_count'] if result else 0
+    return result[0]["users_count"] if result else 0
