@@ -108,3 +108,8 @@ def get_users_count(shopping_list_id):
     """
     result = db.query(sql, [shopping_list_id])
     return result[0]["users_count"] if result else 0
+
+def has_user_access(shopping_list_id, user_id):
+    sql = "SELECT 1 FROM shopping_list_user WHERE shopping_list_id = ? AND user_id = ?"
+    result = db.query(sql, [shopping_list_id, user_id])
+    return len(result) > 0

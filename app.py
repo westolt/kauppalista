@@ -1,6 +1,6 @@
 import sqlite3
 from flask import Flask
-from flask import redirect, render_template, request, session, url_for
+from flask import redirect, render_template, request, session, url_for, abort
 from werkzeug.security import check_password_hash, generate_password_hash
 import config
 import db
@@ -24,8 +24,23 @@ def index():
 # Show user
 @app.route("/user/<int:user_id>")
 def show_user(user_id):
-    user = list_users.get_user(user_id)
+    if "user_id" not in session:
+        abort(401)
+
     shopping_list_id = request.args.get("shopping_list_id")
+    if not shopping_list_id:
+        abort(400, "Shopping list ID is required")
+
+    if not shopping_lists.has_user_access(shopping_list_id, session["user_id"]):
+        abort(403)
+
+    if not shopping_lists.has_user_access(shopping_list_id, user_id):
+        abort(403)
+
+    user = list_users.get_user(user_id)
+    if not user:
+        abort(404)
+
     shopping_list = shopping_lists.get_list(shopping_list_id)
     purchased_items = list_users.purchased_items_by_user(user_id, shopping_list_id)
     total_price = list_users.total(user_id, shopping_list_id)
@@ -63,6 +78,12 @@ def buy_item(shopping_list_id, item_id):
 # Edit item in shopping list
 @app.route("/shopping_list/<int:shopping_list_id>/edit_item/<int:item_id>", methods=["GET", "POST"])
 def edit_item(shopping_list_id, item_id):
+    if "user_id" not in session:
+        abort(401)
+
+    if not shopping_lists.has_user_access(shopping_list_id, session["user_id"]):
+        abort(403)
+
     if request.method == "POST":
         name = request.form["name"]
         quantity = request.form["quantity"]
@@ -74,7 +95,7 @@ def edit_item(shopping_list_id, item_id):
         if item:
             return render_template("edit_item.html", item=item[0], shopping_list_id=shopping_list_id)
         else:
-            return "Item not found", 404
+            abort(404)
 
 # Remove item from shopping list
 @app.route("/shopping_list/<int:shopping_list_id>/delete_item/<int:item_id>", methods=["POST"])
@@ -105,13 +126,18 @@ def leave_shopping_list():
 # View shopping list
 @app.route("/shopping_list/<int:shopping_list_id>")
 def show_shopping_list(shopping_list_id):
+    if "user_id" not in session:
+        abort(401)
+
     shopping_list = shopping_lists.get_list(shopping_list_id)
+    if not shopping_lists.has_user_access(shopping_list_id, session["user_id"]):
+        abort(403)
+
     items = shopping_lists.get_items(shopping_list_id)
     shopping_list_users = shopping_lists.get_users(shopping_list_id)
     categories = shopping_lists.get_categories()
 
     return render_template("show_shopping_list.html", shopping_list=shopping_list, items=items, shopping_list_users=shopping_list_users, categories=categories)
-
 
 # Create a new shopping list
 @app.route("/new_shopping_list", methods=["POST"])
