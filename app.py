@@ -138,12 +138,26 @@ def leave_shopping_list():
 
     shopping_list_id = request.form.get("shopping_list_id")
     if not shopping_list_id:
-        abort(400)
-    
+        abort(401)
+
     if not shopping_lists.has_user_access(shopping_list_id, session["user_id"]):
         abort(403)
-    
+
+    users_count = shopping_lists.get_users_count(shopping_list_id)
+    confirm_delete = request.form.get("confirm_delete") == "true"
+
+    if users_count == 1 and not confirm_delete:
+        shopping_list = shopping_lists.get_list(shopping_list_id)
+        return render_template("confirm_leave_last.html", 
+                            shopping_list=shopping_list,
+                            shopping_list_id=shopping_list_id)
+
     shopping_lists.remove_user_from_list(session["user_id"], shopping_list_id)
+
+    if users_count == 1 and confirm_delete:
+        shopping_lists.delete_entire_list(shopping_list_id)
+        return redirect("/")
+    
     return redirect("/")
 
 # View shopping list
@@ -165,7 +179,7 @@ def show_shopping_list(shopping_list_id):
 # Create a new shopping list
 @app.route("/new_shopping_list", methods=["POST"])
 def new_shopping_list():
-    check_csrf()    
+    check_csrf()
     if "user_id" not in session:
         return redirect("/login")
 

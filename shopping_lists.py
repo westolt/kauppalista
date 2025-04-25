@@ -113,3 +113,16 @@ def has_user_access(shopping_list_id, user_id):
     sql = "SELECT 1 FROM shopping_list_user WHERE shopping_list_id = ? AND user_id = ?"
     result = db.query(sql, [shopping_list_id, user_id])
     return len(result) > 0
+
+def delete_entire_list(shopping_list_id):
+    sql_users = "DELETE FROM shopping_list_user WHERE shopping_list_id = ?"
+    db.execute(sql_users, [shopping_list_id])
+    
+    sql_items = "DELETE FROM item WHERE shopping_list_id = ?"
+    db.execute(sql_items, [shopping_list_id])
+    
+    sql_purchased = "DELETE FROM purchased_item WHERE shopping_list_id = ?"
+    db.execute(sql_purchased, [shopping_list_id])
+    
+    sql_list = "DELETE FROM shopping_list WHERE id = ?"
+    db.execute(sql_list, [shopping_list_id])

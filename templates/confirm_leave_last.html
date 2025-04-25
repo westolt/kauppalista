@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vahvista poistuminen</title>
+</head>
+<body>
+    <h1>Olet listan "{{ shopping_list.name }}" viimeinen jäsen</h1>
+    <p>Jos poistut listalta, koko lista poistetaan pysyvästi.</p>
+    
+    <form action="{{ url_for('leave_shopping_list') }}" method="POST">
+        <input type="hidden" name="shopping_list_id" value="{{ shopping_list.id }}">
+        <input type="hidden" name="confirm_delete" value="true">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+        <button type="submit">Kyllä, poista lista pysyvästi</button>
+    </form>
+    
+    <a href="/">
+        <button>Peruuta</button>
+    </a>
+</body>
+</html>
