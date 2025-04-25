@@ -1,4 +1,5 @@
 import sqlite3
+import secrets
 from flask import Flask
 from flask import redirect, render_template, request, session, url_for, abort
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -10,6 +11,10 @@ import re
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
+
+def check_csrf():
+    if request.form["csrf_token"] != session["csrf_token"]:
+        abort(403)
 
 # Render the front page
 @app.route("/")
@@ -29,7 +34,7 @@ def show_user(user_id):
 
     shopping_list_id = request.args.get("shopping_list_id")
     if not shopping_list_id:
-        abort(400, "Shopping list ID is required")
+        abort(404)
 
     if not shopping_lists.has_user_access(shopping_list_id, session["user_id"]):
         abort(403)
@@ -56,7 +61,12 @@ def show_user(user_id):
 # Buy item from shopping list
 @app.route("/shopping_list/<int:shopping_list_id>/buy_item/<int:item_id>", methods=["GET", "POST"])
 def buy_item(shopping_list_id, item_id):
+    if "user_id" not in session:
+        abort(401)
+    if not shopping_lists.has_user_access(shopping_list_id, session["user_id"]):
+        abort(403)
     if request.method == "POST":
+        check_csrf()
         price = request.form["price"]
         buyer = request.form["purchased_by_user_id"]
         if not re.match(r'^\d{1,5}(\.\d{1,2})?$', price) or float(price) < 0 or float(price) > 10000:
@@ -85,6 +95,7 @@ def edit_item(shopping_list_id, item_id):
         abort(403)
 
     if request.method == "POST":
+        check_csrf()
         name = request.form["name"]
         quantity = request.form["quantity"]
         category_id = request.form["category_id"]
@@ -100,12 +111,18 @@ def edit_item(shopping_list_id, item_id):
 # Remove item from shopping list
 @app.route("/shopping_list/<int:shopping_list_id>/delete_item/<int:item_id>", methods=["POST"])
 def delete_item(shopping_list_id, item_id):
+    check_csrf()
+    if "user_id" not in session:
+        abort(401)
+    if not shopping_lists.has_user_access(shopping_list_id, session["user_id"]):
+        abort(403)
     shopping_lists.delete_item(item_id, shopping_list_id)
     return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
 
 # Add item to shopping list
 @app.route("/shopping_list/<int:shopping_list_id>/add_item", methods=["POST"])
 def add_item(shopping_list_id):
+    check_csrf()
     name = request.form["name"]
     quantity = request.form["quantity"]
     category_id = request.form["category_id"]
@@ -115,12 +132,18 @@ def add_item(shopping_list_id):
 # Leave shopping list
 @app.route("/leave_shopping_list", methods=["POST"])
 def leave_shopping_list():
+    check_csrf()
     if "user_id" not in session:
-        return redirect("/login")
+        abort(401)
 
-    user_id = session["user_id"]
     shopping_list_id = request.form.get("shopping_list_id")
-    shopping_lists.remove_user_from_list(user_id, shopping_list_id)
+    if not shopping_list_id:
+        abort(400)
+    
+    if not shopping_lists.has_user_access(shopping_list_id, session["user_id"]):
+        abort(403)
+    
+    shopping_lists.remove_user_from_list(session["user_id"], shopping_list_id)
     return redirect("/")
 
 # View shopping list
@@ -142,6 +165,7 @@ def show_shopping_list(shopping_list_id):
 # Create a new shopping list
 @app.route("/new_shopping_list", methods=["POST"])
 def new_shopping_list():
+    check_csrf()    
     if "user_id" not in session:
         return redirect("/login")
 
@@ -157,6 +181,7 @@ def new_shopping_list():
 # Join another user's list
 @app.route("/join_shopping_list", methods=["POST"])
 def join_shopping_list():
+    check_csrf()
     if "user_id" not in session:
         return redirect("/login")
 
@@ -223,6 +248,7 @@ def login():
     if check_password_hash(password_hash, password):
         session["username"] = username
         session["user_id"] = user_id
+        session["csrf_token"] = secrets.token_hex(16)
         return redirect("/")
     else:
         return redirect(url_for("error", message="Väärä tunnus tai salasana"))
@@ -230,7 +256,9 @@ def login():
 # Logout
 @app.route("/logout")
 def logout():
-    del session["username"]
+    if "user_id" in session:
+        del session["username"]
+        del session["user_id"]
     return redirect("/")
 
 # Account created message

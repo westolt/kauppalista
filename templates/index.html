@@ -17,6 +17,7 @@
           <a href="/shopping_list/{{shopping_list.id}}">{{shopping_list.name}}</a>
           <form action="/leave_shopping_list" method="post" style="display: inline;">
             <input type="hidden" name="shopping_list_id" value="{{shopping_list.id}}">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
             <button type="submit">Poistu listasta</button>
           </form>
         </li>
@@ -30,6 +31,7 @@
       <form action="{{ url_for('new_shopping_list') }}" method="post">
           <input type="text" name="name" placeholder="Anna kauppalistan nimi">
           <input type="password" name="password" placeholder="Anna salasana">
+          <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
           <button type="submit">Luo</button>
       </form>
   
@@ -37,6 +39,7 @@
       <form action="{{ url_for('join_shopping_list') }}" method="post">
           <input type="text" name="name" placeholder="Listan nimi">
           <input type="password" name="password" placeholder="Salasana">
+          <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
           <button type="submit">Liity</button>
       </form>
       <p>
