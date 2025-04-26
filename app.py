@@ -97,7 +97,13 @@ def edit_item(shopping_list_id, item_id):
     if request.method == "POST":
         check_csrf()
         name = request.form["name"]
+        if not name or len(name) > 20:
+            abort(403)
+
         quantity = request.form["quantity"]
+        if not quantity or len(quantity) > 10:
+            abort(403)
+
         category_id = request.form["category_id"]
         shopping_lists.update_item(name, quantity, item_id, category_id, shopping_list_id)
         return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
@@ -124,7 +130,13 @@ def delete_item(shopping_list_id, item_id):
 def add_item(shopping_list_id):
     check_csrf()
     name = request.form["name"]
+    if not name or len(name) > 20:
+        abort(403)
+
     quantity = request.form["quantity"]
+    if not quantity or len(quantity) > 10:
+        abort(403)
+
     category_id = request.form["category_id"]
     shopping_lists.add_item_to_list(name, quantity, category_id, shopping_list_id)
     return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
@@ -174,7 +186,15 @@ def show_shopping_list(shopping_list_id):
     shopping_list_users = shopping_lists.get_users(shopping_list_id)
     categories = shopping_lists.get_categories()
 
-    return render_template("show_shopping_list.html", shopping_list=shopping_list, items=items, shopping_list_users=shopping_list_users, categories=categories)
+    category_filter = request.args.get("category_filter", "all")
+
+    filtered_items = [
+        item for item in items
+        if category_filter == 'all' or
+           str(item['category_id']) == category_filter
+    ]
+
+    return render_template("show_shopping_list.html", shopping_list=shopping_list, items=items, filtered_items=filtered_items, shopping_list_users=shopping_list_users, categories=categories)
 
 # Create a new shopping list
 @app.route("/new_shopping_list", methods=["POST"])
@@ -184,7 +204,13 @@ def new_shopping_list():
         return redirect("/login")
 
     name = request.form["name"]
+    if not name or len(name) > 15:
+        abort(403)
+
     password = request.form["password"]
+    if not password or len(password) > 15:
+        abort(403)
+
     user_id = session["user_id"]
     password_hash = generate_password_hash(password)
 

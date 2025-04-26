@@ -67,7 +67,7 @@ def get_item(item_id, shopping_list_id):
 
 def get_items(shopping_list_id):
     sql = """
-    SELECT id, name, quantity 
+    SELECT id, name, quantity, category_id
     FROM item 
     WHERE shopping_list_id = ?;
     """

@@ -5,8 +5,20 @@
 </head>
 <body>
     <h1>{{ shopping_list.name }}</h1>
+
+    <h2>Näytä tuotteet</h2>
+    <form method="GET" action="{{ url_for('show_shopping_list', shopping_list_id=shopping_list.id) }}">
+        <select name="category_filter">
+            <option value="all">Kaikki</option>
+            <option value="1">Elintarvikkeet</option>
+            <option value="2">Käyttötavara</option>
+            <option value="3">Muu</option>
+        </select>
+        <button type="submit">Näytä</button>
+    </form>
+
     <ul>
-        {% for item in items %}
+        {% for item in filtered_items %}
             <li>
               {{ item.name }} - {{ item.quantity }}
               <a href="{{ url_for('buy_item', shopping_list_id=shopping_list.id, item_id=item.id) }}"><button>Merkitse ostetuksi</button></a>
@@ -18,10 +30,11 @@
             </li>
         {% endfor %}
     </ul>
+
     <h2>Lisää tuote</h2>
     <form action="{{ url_for('add_item', shopping_list_id=shopping_list.id) }}" method="POST">
-        <input type="text" name="name" placeholder="Tuotteen nimi" required>
-        <input type="text" name="quantity" placeholder="Määrä" required>
+        <input type="text" name="name" placeholder="Tuotteen nimi" maxlength="20" required>
+        <input type="text" name="quantity" placeholder="Määrä" maxlength="10" required>
         Tuoteryhmät<select name="category_id" required>
             <option value="1">Elintarvike</option>
             <option value="2">Käyttötavara</option>
@@ -30,6 +43,7 @@
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
         <button type="submit">Lisää</button>
     </form>
+
     <h3>Käyttäjät</h3>
     <ul>
         {% for user in shopping_list_users %}

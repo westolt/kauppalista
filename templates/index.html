@@ -29,8 +29,8 @@
   
       <h2>Uusi kauppalista</h2>
       <form action="{{ url_for('new_shopping_list') }}" method="post">
-          <input type="text" name="name" placeholder="Anna kauppalistan nimi">
-          <input type="password" name="password" placeholder="Anna salasana">
+          <input type="text" name="name" placeholder="Anna kauppalistan nimi" maxlength="15" required >
+          <input type="password" name="password" placeholder="Anna salasana" maxlength="15" required>
           <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
           <button type="submit">Luo</button>
       </form>
