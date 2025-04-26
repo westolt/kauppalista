@@ -148,7 +148,7 @@ def leave_shopping_list():
 
     if users_count == 1 and not confirm_delete:
         shopping_list = shopping_lists.get_list(shopping_list_id)
-        return render_template("confirm_leave_last.html", 
+        return render_template("confirm_leave_last.html",
                             shopping_list=shopping_list,
                             shopping_list_id=shopping_list_id)
 
@@ -157,7 +157,7 @@ def leave_shopping_list():
     if users_count == 1 and confirm_delete:
         shopping_lists.delete_entire_list(shopping_list_id)
         return redirect("/")
-    
+
     return redirect("/")
 
 # View shopping list
@@ -232,8 +232,15 @@ def create():
     password1 = request.form["password1"]
     password2 = request.form["password2"]
 
+    if not username or len(username) > 15:
+        abort(403)
+
+    if len(password1) < 3 or len(password1) > 20:
+        abort(403)
+
     if password1 != password2:
         return redirect(url_for("error", message="Salasanat eivät ole samat"))
+
     password_hash = generate_password_hash(password1)
 
     try:

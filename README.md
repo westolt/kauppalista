@@ -11,7 +11,8 @@
     - Käyttäjän maksaman tuotteen hinta, määrä ja ostoaika.
     - Jos listalla on useita jäseniä, profiiliin lasketaan automaattisesti käyttäjän osuus prosentteina kaikkien käyttäjien ostoksista.
 *  Eri listoilla on omat käyttäjäsivut eli ostetut tuotteet eivät mene eri listojen kesken sekaisin.
-*  Käyttäjä pystyy valitsemaan tuotteelle luokitteluksi tuoteryhmän (elintarvikkeet, käyttötavarat, muut). 
+*  Käyttäjä pystyy valitsemaan tuotteelle luokitteluksi tuoteryhmän (elintarvikkeet, käyttötavarat, muut).
+*  Kun listan viimeinen käyttäjä päättää poistua listasta, poistuu tietokannasta kaikki listaan liittyvät tiedot. Ohessa ohjelma varmistaa käyttäjältä haluaako tämä varmasti tehdä tämän.
 
 # Omat kehitysideat
 *  Listan pystyy järjestämään tuoteryhmien perusteella.
