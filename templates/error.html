@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Virhe</title>
-</head>
-<body>
+{% extends "layout.html" %}
+
+{% block title %}Kauppalista{% endblock %}
+
+{% block content %}
     <h1>Virhe</h1>
     <p>{{ message }}</p>
     <a href="/">Palaa etusivulle</a>
-</body>
-</html>
+{% endblock %}

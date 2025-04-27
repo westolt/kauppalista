@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Vahvista poistuminen</title>
-</head>
-<body>
-    <h1>Olet listan "{{ shopping_list.name }}" viimeinen jäsen</h1>
+{% extends "layout.html" %}
+
+{% block title %}Kauppalista{% endblock %}
+
+{% block content %}
+    <h2>Olet listan "{{ shopping_list.name }}" viimeinen jäsen</h2>
     <p>Jos poistut listalta, koko lista poistetaan pysyvästi.</p>
     
     <form action="{{ url_for('leave_shopping_list') }}" method="POST">
@@ -17,5 +16,4 @@
     <a href="/">
         <button>Peruuta</button>
     </a>
-</body>
-</html>
+{% endblock %}

@@ -1,23 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Muokkaa tuotetta</title>
-</head>
-<body>
-    <h1>Muokkaa tuotetta</h1>
-    <form action="{{ url_for('edit_item', shopping_list_id=shopping_list_id, item_id=item.id) }}" method="POST">
-        <input type="text" name="name" value="{{ item.name }}" maxlength="20" required>
-        <input type="text" name="quantity" value="{{ item.quantity }}" maxlength="10" required>
-        Tuoteryhmät<select name="category_id" required>
-            <option value="1">Elintarvike</option>
-            <option value="2">Käyttötavara</option>
-            <option value="3">Muu</option>
-        </select>
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-        <button type="submit">Tallenna</button>
-    </form>
-    <a href="{{ url_for('show_shopping_list', shopping_list_id=shopping_list_id) }}" >
-        <button>Peruuta</button>
-    </a>
-</body>
-</html>
+{% extends "layout.html" %}
+
+{% block title %}Kauppalista{% endblock %}
+
+{% block content %}
+<h2>Muokkaa tuotetta</h2>
+<form action="{{ url_for('edit_item', shopping_list_id=shopping_list_id, item_id=item.id) }}" method="POST">
+    <input type="text" name="name" value="{{ item.name }}" maxlength="20" required>
+    <input type="text" name="quantity" value="{{ item.quantity }}" maxlength="10" required>
+    Tuoteryhmät<select name="category_id" required>
+        <option value="1">Elintarvike</option>
+        <option value="2">Käyttötavara</option>
+        <option value="3">Muu</option>
+    </select>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+    <button type="submit">Tallenna</button>
+</form>
+<a href="{{ url_for('show_shopping_list', shopping_list_id=shopping_list_id) }}" >
+    <button>Peruuta</button>
+</a>
+{% endblock %}
