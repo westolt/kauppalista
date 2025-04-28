@@ -4,3 +4,79 @@ body {
     font-family: sans-serif;
     background-color: lightblue;
   }
+
+.shopping_list {
+  border: 2px solid black;
+  margin: 1em;
+  padding: 0.2em 0.5em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list_name {
+  display: inline-block;
+  padding: 0.5em 1em;
+  color: black;
+  text-decoration: none;
+  background-color: white;
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.list_name:hover {
+  background-color: #f0f0f0c5;
+}
+
+.list_name:visited {
+  color: black;
+  text-decoration: none;
+}
+
+.leave_button {
+  flex-shrink: 0;
+}
+
+.item {
+  border: 2px solid black;
+  margin: 1em;
+  padding: 0.2em 0.5em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item_buttons {
+  display: flex;
+  gap: 0.5em;
+}
+
+.item_info {
+  margin-bottom: 1em;
+}
+
+.item_info small {
+  color: gray;
+  font-size: 0.9em;
+}
+
+.user_list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin-top: 1em;
+}
+
+.user {
+  display: inline-block;
+  padding: 0.5em 1em;
+  background-color: white;
+  color: black;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.user:hover {
+  background-color: #f0f0f0c5;
+}

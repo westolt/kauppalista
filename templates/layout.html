@@ -17,20 +17,24 @@
       {% block content %}{% endblock %}
 
   {% else %}
-  <p>
-    <a href="/register"><button>Rekisteröidy</button></a>
-    <form action="/login" method="post">
-        <p>
-          Tunnus: <br />
-          <input type="text" name="username" />
-        </p>
-        <p>
-          Salasana: <br />
-          <input type="password" name="password" />
-        </p>
-        <input type="submit" value="Kirjaudu" />
-      </form>
-  </p>
+  <div>
+    <h2>Tervetuloa käyttämään Kauppalista-sovellusta!</h2>
+    <p>Jos sinulla ei vielä ole tiliä, voit <a href="/register">rekisteröityä täällä</a>.</p>
+  </div>
+  
+  <form action="/login" method="post">
+    <p>
+      Tunnus: <br />
+      <input type="text" name="username" />
+    </p>
+    <p>
+      Salasana: <br />
+      <input type="password" name="password" />
+    </p>
+    <p>
+      <input type="submit" value="Kirjaudu" />
+    </p>
+  </form>
   {% endif %}
 </body>
 </html>

@@ -6,7 +6,7 @@ CREATE TABLE users (
 
 CREATE TABLE shopping_list (
     id INTEGER PRIMARY KEY,
-    name TEXT,
+    name TEXT UNIQUE,
     password TEXT,
     creation_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

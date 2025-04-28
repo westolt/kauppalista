@@ -5,7 +5,6 @@
 {% block content %}
 <h2>{{ shopping_list.name }}</h2>
 
-<h3>Näytä tuotteet</h3>
 <form method="GET" action="{{ url_for('show_shopping_list', shopping_list_id=shopping_list.id) }}">
     <select name="category_filter">
         <option value="all">Kaikki</option>
@@ -16,21 +15,30 @@
     <button type="submit">Näytä</button>
 </form>
 
-<ul>
-    {% for item in filtered_items %}
-        <li>
-            {{ item.name }} - {{ item.quantity }}
-            <a href="{{ url_for('buy_item', shopping_list_id=shopping_list.id, item_id=item.id) }}"><button>Merkitse ostetuksi</button></a> |
-            <a href="{{ url_for('edit_item', shopping_list_id=shopping_list.id, item_id=item.id) }}"><button>Muokkaa</button></a> |
+
+{% for item in filtered_items %}
+<div class="item">
+    <div>
+        {{ item.name }} - {{ item.quantity }}
+    </div>
+    <div class="item_buttons">
+        <div class="buy_item">
+            <a href="{{ url_for('buy_item', shopping_list_id=shopping_list.id, item_id=item.id) }}"><button>Merkitse ostetuksi</button></a>
+        </div>
+        <div class="edit_item">
+            <a href="{{ url_for('edit_item', shopping_list_id=shopping_list.id, item_id=item.id) }}"><button>Muokkaa</button></a>
+        </div>
+        <div class="delete_item">
             <form action="{{ url_for('delete_item', shopping_list_id=shopping_list.id, item_id=item.id) }}" method="POST" style="display:inline;">
                 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
                 <button type="submit">Poista</button>
             </form>
-        </li>
-    {% endfor %}
-</ul>
+        </div>
+    </div>
+</div>
+{% endfor %}
 
-<h2>Lisää tuote</h2>
+<h3>Lisää tuote</h3>
 <form action="{{ url_for('add_item', shopping_list_id=shopping_list.id) }}" method="POST">
     <input type="text" name="name" placeholder="Tuotteen nimi" maxlength="20" required>
     <input type="text" name="quantity" placeholder="Määrä" maxlength="10" required>
@@ -44,9 +52,9 @@
 </form>
 
 <h3>Käyttäjät</h3>
-<ul>
+<div class="user_list">
     {% for user in shopping_list_users %}
-        <li><a href="/user/{{ user.id }}?shopping_list_id={{ shopping_list.id }}"><button>{{ user.username }}</button></a></li>
+        <a class="user" href="/user/{{ user.id }}?shopping_list_id={{ shopping_list.id }}">{{ user.username }}</a>
     {% endfor %}
-</ul>
+</div>
 {% endblock %}
