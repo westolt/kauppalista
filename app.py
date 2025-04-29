@@ -1,11 +1,8 @@
 import re
 import sqlite3
 import secrets
-
-from flask import Flask
-from flask import redirect, render_template, request, session, url_for, abort, flash
+from flask import Flask, redirect, render_template, request, session, url_for, abort, flash
 from werkzeug.security import check_password_hash, generate_password_hash
-
 import config
 import db
 import shopping_lists
@@ -53,40 +50,56 @@ def show_user(user_id):
     total_price = list_users.total(user_id, shopping_list_id)
 
     overall_total_price = None
-
     users_count = shopping_lists.get_users_count(shopping_list_id)
     if users_count > 1:
         overall_total_price = list_users.overall_total(shopping_list_id)
 
-    return render_template("show_user.html", user=user, shopping_list=shopping_list, shopping_list_id=shopping_list_id, purchased_items=purchased_items, total_price=total_price, overall_total_price=overall_total_price)
+    return render_template(
+        "show_user.html",
+        user=user,
+        shopping_list=shopping_list,
+        shopping_list_id=shopping_list_id,
+        purchased_items=purchased_items,
+        total_price=total_price,
+        overall_total_price=overall_total_price
+    )
 
 # Buy item from shopping list
-@app.route("/shopping_list/<int:shopping_list_id>/buy_item/<int:item_id>", methods=["GET", "POST"])
+@app.route("/shopping_list/<int:shopping_list_id>/buy_item/<int:item_id>",
+           methods=["GET", "POST"])
 def buy_item(shopping_list_id, item_id):
     if "user_id" not in session:
         abort(401)
     if not shopping_lists.has_user_access(shopping_list_id, session["user_id"]):
         abort(403)
+
     if request.method == "POST":
         check_csrf()
         price = request.form["price"]
         buyer = request.form["purchased_by_user_id"]
-        if not re.match(r'^\d{1,5}(\.\d{1,2})?$', price) or float(price) < 0 or float(price) > 10000:
-            flash("Anna kelvollinen hinta väliltä 0 - 10000, enintään kaksi desimaalia. Erota desimaalit pisteellä (esim: 10.55)")
-            return redirect(url_for("buy_item", shopping_list_id=shopping_list_id, item_id=item_id))
+
+        if (not re.match(r'^\d{1,5}(\.\d{1,2})?$', price) or
+                float(price) < 0 or float(price) > 10000):
+            flash("Anna kelvollinen hinta väliltä 0 - 10000, enintään kaksi desimaalia.")
+            return redirect(url_for("buy_item", shopping_list_id=shopping_list_id,
+                                  item_id=item_id))
 
         shopping_lists.buy_item(price, buyer, item_id, shopping_list_id)
         return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
-    else:
-        item = shopping_lists.get_item(item_id, shopping_list_id)
-        users = shopping_lists.get_users(shopping_list_id)
-        if item:
-            return render_template("buy_item.html", item=item[0], shopping_list_id=shopping_list_id, users=users)
-        else:
-            return "Item not found", 404
 
-# Edit item in shopping list
-@app.route("/shopping_list/<int:shopping_list_id>/edit_item/<int:item_id>", methods=["GET", "POST"])
+    item = shopping_lists.get_item(item_id, shopping_list_id)
+    users = shopping_lists.get_users(shopping_list_id)
+    if not item:
+        abort(404)
+    return render_template(
+        "buy_item.html",
+        item=item[0],
+        shopping_list_id=shopping_list_id,
+        users=users
+    )
+
+@app.route("/shopping_list/<int:shopping_list_id>/edit_item/<int:item_id>",
+           methods=["GET", "POST"])
 def edit_item(shopping_list_id, item_id):
     if "user_id" not in session:
         abort(401)
@@ -97,25 +110,23 @@ def edit_item(shopping_list_id, item_id):
     if request.method == "POST":
         check_csrf()
         name = request.form["name"]
-        if not name or len(name) > 20:
-            abort(403)
-
         quantity = request.form["quantity"]
-        if not quantity or len(quantity) > 10:
+        category_id = request.form["category_id"]
+
+        if not name or len(name) > 20 or not quantity or len(quantity) > 10:
             abort(403)
 
-        category_id = request.form["category_id"]
         shopping_lists.update_item(name, quantity, item_id, category_id, shopping_list_id)
         return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
-    else:
-        item = shopping_lists.get_item(item_id, shopping_list_id)
-        if item:
-            return render_template("edit_item.html", item=item[0], shopping_list_id=shopping_list_id)
-        else:
-            abort(404)
+
+    item = shopping_lists.get_item(item_id, shopping_list_id)
+    if not item:
+        abort(404)
+    return render_template("edit_item.html", item=item[0], shopping_list_id=shopping_list_id)
 
 # Remove item from shopping list
-@app.route("/shopping_list/<int:shopping_list_id>/delete_item/<int:item_id>", methods=["POST"])
+@app.route("/shopping_list/<int:shopping_list_id>/delete_item/<int:item_id>",
+           methods=["POST"])
 def delete_item(shopping_list_id, item_id):
     check_csrf()
     if "user_id" not in session:
@@ -130,14 +141,12 @@ def delete_item(shopping_list_id, item_id):
 def add_item(shopping_list_id):
     check_csrf()
     name = request.form["name"]
-    if not name or len(name) > 20:
-        abort(403)
-
     quantity = request.form["quantity"]
-    if not quantity or len(quantity) > 10:
+    category_id = request.form["category_id"]
+
+    if not name or len(name) > 20 or not quantity or len(quantity) > 10:
         abort(403)
 
-    category_id = request.form["category_id"]
     shopping_lists.add_item_to_list(name, quantity, category_id, shopping_list_id)
     return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
 
@@ -187,14 +196,19 @@ def show_shopping_list(shopping_list_id):
     categories = shopping_lists.get_categories()
 
     category_filter = request.args.get("category_filter", "all")
-
     filtered_items = [
         item for item in items
-        if category_filter == "all" or
-           str(item["category_id"]) == category_filter
+        if category_filter == "all" or str(item["category_id"]) == category_filter
     ]
 
-    return render_template("show_shopping_list.html", shopping_list=shopping_list, items=items, filtered_items=filtered_items, shopping_list_users=shopping_list_users, categories=categories)
+    return render_template(
+        "show_shopping_list.html",
+        shopping_list=shopping_list,
+        items=items,
+        filtered_items=filtered_items,
+        shopping_list_users=shopping_list_users,
+        categories=categories
+    )
 
 # Create a new shopping list
 @app.route("/new_shopping_list", methods=["POST"])
@@ -204,11 +218,9 @@ def new_shopping_list():
         return redirect("/login")
 
     name = request.form["name"]
-    if not name or len(name) > 25:
-        abort(403)
-
     password = request.form["password"]
-    if len(password) < 3 or len(password) > 20:
+
+    if not name or len(name) > 25 or len(password) < 3 or len(password) > 20:
         abort(403)
 
     user_id = session["user_id"]
@@ -234,7 +246,6 @@ def join_shopping_list():
     user_id = session["user_id"]
 
     result = shopping_lists.get_list_by_name(name)
-
     if not result:
         flash("Kauppalistaa ei löydy")
         return redirect("/")
@@ -242,16 +253,16 @@ def join_shopping_list():
     shopping_list_id = result[0][0]
     password_hash = result[0][1]
 
-    if check_password_hash(password_hash, password):
-        try:
-            shopping_lists.join_list(shopping_list_id, user_id)
-            flash("Kauppalistaan liittyminen onnistui!")
-            return redirect("/")
-        except sqlite3.IntegrityError:
-            flash("Olet jo liittynyt tähän kauppalistaan!")
-            return redirect("/")
-    else:
+    if not check_password_hash(password_hash, password):
         flash("Väärä salasana!")
+        return redirect("/")
+
+    try:
+        shopping_lists.join_list(shopping_list_id, user_id)
+        flash("Kauppalistaan liittyminen onnistui!")
+        return redirect("/")
+    except sqlite3.IntegrityError:
+        flash("Olet jo liittynyt tähän kauppalistaan!")
         return redirect("/")
 
 # Redirect to registration page
@@ -296,7 +307,6 @@ def login():
     password = request.form.get("password")
 
     result = shopping_lists.log_in(username)
-
     if not result:
         flash("Väärä tunnus tai salasana!")
         return redirect("/")

@@ -58,7 +58,10 @@ def delete_item(item_id, shopping_list_id):
     db.execute(sql, [item_id, shopping_list_id])
 
 def update_item(name, quantity, item_id, category_id, shopping_list_id):
-    sql = "UPDATE item SET name = ?, quantity = ?, category_id = ? WHERE id = ? AND shopping_list_id = ?;"
+    sql = """
+    UPDATE item 
+    SET name = ?, quantity = ?, category_id = ? 
+    WHERE id = ? AND shopping_list_id = ?;"""
     db.execute(sql, [name, quantity, category_id, item_id, shopping_list_id])
 
 def get_item(item_id, shopping_list_id):
