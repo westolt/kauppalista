@@ -203,25 +203,31 @@ def new_shopping_list():
 
     name = request.form["name"]
     if not name or len(name) > 15:
-        abort(403)
+        flash("Listan nimen tulee olla 1-15 merkkiä pitkä")
+        return redirect("/")
 
     password = request.form["password"]
-    if not password or len(password) > 15:
-        abort(403)
+    if len(password) < 3 or len(password) > 15:
+        flash("Salasanan tulee olla 3-15 merkkiä pitkä")
+        return redirect("/")
 
     user_id = session["user_id"]
     password_hash = generate_password_hash(password)
 
-    shopping_lists.create_list(name, password_hash, user_id)
-
-    return redirect("/")
+    try:
+        shopping_lists.create_list(name, password_hash, user_id)
+        flash("Lista luotu onnistuneesti!")
+        return redirect("/")
+    except sqlite3.IntegrityError:
+        flash(f"Lista nimellä '{name}' on jo olemassa")
+        return redirect("/")
 
 # Join another user's list
 @app.route("/join_shopping_list", methods=["POST"])
 def join_shopping_list():
     check_csrf()
     if "user_id" not in session:
-        return redirect("/login")
+        return redirect("/")
 
     name = request.form["name"]
     password = request.form["password"]
@@ -239,6 +245,7 @@ def join_shopping_list():
     if check_password_hash(password_hash, password):
         try:
             shopping_lists.join_list(shopping_list_id, user_id)
+            flash("Kauppalistaan liittyminen onnistui")
             return redirect("/")
         except sqlite3.IntegrityError:
             flash("Olet jo liittynyt tähän kauppalistaan")
@@ -273,18 +280,17 @@ def create():
 
     try:
         shopping_lists.create_user(username, password_hash)
+        flash("Tunnukset luotu!")
+        return redirect("/register")
     except sqlite3.IntegrityError:
         flash("Tunnus on jo varattu")
         return redirect("/register")
-
-    flash("Tunnukset luotu")
-    return redirect("/register")
 
 # Login
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        return render_template("/") 
+        return render_template("/")
 
     username = request.form.get("username")
     password = request.form.get("password")
