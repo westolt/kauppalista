@@ -1,7 +1,7 @@
 import sqlite3
 import secrets
 from flask import Flask
-from flask import redirect, render_template, request, session, url_for, abort
+from flask import redirect, render_template, request, session, url_for, abort, flash
 from werkzeug.security import check_password_hash, generate_password_hash
 import config
 import db
@@ -70,10 +70,8 @@ def buy_item(shopping_list_id, item_id):
         price = request.form["price"]
         buyer = request.form["purchased_by_user_id"]
         if not re.match(r'^\d{1,5}(\.\d{1,2})?$', price) or float(price) < 0 or float(price) > 10000:
-            error = "Anna kelvollinen hinta väliltä 0 - 10000, enintään kaksi desimaalia. Erota desimaalit pisteellä (esim: 10.55)"
-            item = shopping_lists.get_item(item_id, shopping_list_id)
-            users = shopping_lists.get_users(shopping_list_id)
-            return render_template("buy_item.html", item=item[0], shopping_list_id=shopping_list_id, users=users, error=error)
+            flash("Anna kelvollinen hinta väliltä 0 - 10000, enintään kaksi desimaalia. Erota desimaalit pisteellä (esim: 10.55)")
+            return redirect(url_for("buy_item", shopping_list_id=shopping_list_id, item_id=item_id))
 
         shopping_lists.buy_item(price, buyer, item_id, shopping_list_id)
         return redirect(url_for("show_shopping_list", shopping_list_id=shopping_list_id))
@@ -232,7 +230,8 @@ def join_shopping_list():
     result = shopping_lists.get_list_by_name(name)
 
     if not result:
-        return redirect(url_for("error", message="Kauppalistaa ei löydy"))
+        flash("Kauppalistaa ei löydy")
+        return redirect("/")
 
     shopping_list_id = result[0][0]
     password_hash = result[0][1]
@@ -242,9 +241,11 @@ def join_shopping_list():
             shopping_lists.join_list(shopping_list_id, user_id)
             return redirect("/")
         except sqlite3.IntegrityError:
-            return redirect(url_for("error", message="Olet jo liittynyt tähän kauppalistaan"))
+            flash("Olet jo liittynyt tähän kauppalistaan")
+            return redirect("/")
     else:
-        return redirect(url_for("error", message="Väärä salasana"))
+        flash("Väärä salasana")
+        return redirect("/")
 
 # Redirect to registration page
 @app.route("/register")
@@ -265,22 +266,25 @@ def create():
         abort(403)
 
     if password1 != password2:
-        return redirect(url_for("error", message="Salasanat eivät ole samat"))
+        flash("Salasanat eivät ole samat")
+        return redirect("/register")
 
     password_hash = generate_password_hash(password1)
 
     try:
         shopping_lists.create_user(username, password_hash)
     except sqlite3.IntegrityError:
-        return redirect(url_for("error", message="Tunnus on jo varattu"))
+        flash("Tunnus on jo varattu")
+        return redirect("/register")
 
-    return redirect(url_for("account_created"))
+    flash("Tunnukset luotu")
+    return redirect("/register")
 
 # Login
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        return render_template("login.html") 
+        return render_template("/") 
 
     username = request.form.get("username")
     password = request.form.get("password")
@@ -288,7 +292,8 @@ def login():
     result = shopping_lists.log_in(username)
 
     if not result:
-        return redirect(url_for("error", message="Väärä tunnus tai salasana"))
+        flash("Väärä tunnus tai salasana")
+        return redirect("/")
 
     user_id, password_hash = result[0]
 
@@ -298,7 +303,8 @@ def login():
         session["csrf_token"] = secrets.token_hex(16)
         return redirect("/")
     else:
-        return redirect(url_for("error", message="Väärä tunnus tai salasana"))
+        flash("Väärä tunnus tai salasana")
+        return redirect("/")
 
 # Logout
 @app.route("/logout")
@@ -307,14 +313,3 @@ def logout():
         del session["username"]
         del session["user_id"]
     return redirect("/")
-
-# Account created message
-@app.route("/account_created")
-def account_created():
-    return render_template("account_created.html")
-
-# Error message
-@app.route("/error")
-def error():
-    message = request.args.get("message", "Tuntematon virhe")
-    return render_template("error.html", message=message)

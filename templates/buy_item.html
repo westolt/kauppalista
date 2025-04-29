@@ -4,9 +4,11 @@
 
 {% block content %}
 <h3>Merkitse ostetuksi</h2>
-{% if error %}
-    <p style="color: red;">{{ error }}</p>
-{% endif %}
+    {% for message in get_flashed_messages() %}
+    <p>
+      <b>{{ message }}</b>
+    </p>
+    {% endfor %}
 <form method="POST">
     <p>Tuote: {{ item.name }}</p>
     <p>Määrä: {{ item.quantity }}</p>
