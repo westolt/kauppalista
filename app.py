@@ -1,13 +1,15 @@
+import re
 import sqlite3
 import secrets
+
 from flask import Flask
 from flask import redirect, render_template, request, session, url_for, abort, flash
 from werkzeug.security import check_password_hash, generate_password_hash
+
 import config
 import db
 import shopping_lists
 import list_users
-import re
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
