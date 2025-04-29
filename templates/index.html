@@ -4,13 +4,12 @@
 
 {% block content %}
 
+<h2>Omat kauppalistat</h2>
 {% for message in get_flashed_messages() %}
   <p>
     <b>{{ message }}</b>
   </p>
   {% endfor %}
-
-<h2>Omat kauppalistat</h2>
 {% if own_shopping_lists %}
 {% for shopping_list in own_shopping_lists %}
 <div class="shopping_list">
@@ -30,8 +29,8 @@
 
 <h2>Uusi kauppalista</h2>
 <form action="{{ url_for('new_shopping_list') }}" method="post">
-    <input type="text" name="name" placeholder="Anna kauppalistan nimi" maxlength="15" required >
-    <input type="password" name="password" placeholder="Anna salasana" maxlength="15" required>
+    <input type="text" name="name" placeholder="Anna kauppalistan nimi" maxlength="25" required >
+    <input type="password" name="password" placeholder="Anna salasana"minlength="3" maxlength="20" required>
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <button type="submit">Luo</button>
 </form>

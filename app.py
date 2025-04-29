@@ -202,14 +202,12 @@ def new_shopping_list():
         return redirect("/login")
 
     name = request.form["name"]
-    if not name or len(name) > 15:
-        flash("Listan nimen tulee olla 1-15 merkkiä pitkä")
-        return redirect("/")
+    if not name or len(name) > 25:
+        abort(403)
 
     password = request.form["password"]
-    if len(password) < 3 or len(password) > 15:
-        flash("Salasanan tulee olla 3-15 merkkiä pitkä")
-        return redirect("/")
+    if len(password) < 3 or len(password) > 20:
+        abort(403)
 
     user_id = session["user_id"]
     password_hash = generate_password_hash(password)
@@ -245,13 +243,13 @@ def join_shopping_list():
     if check_password_hash(password_hash, password):
         try:
             shopping_lists.join_list(shopping_list_id, user_id)
-            flash("Kauppalistaan liittyminen onnistui")
+            flash("Kauppalistaan liittyminen onnistui!")
             return redirect("/")
         except sqlite3.IntegrityError:
-            flash("Olet jo liittynyt tähän kauppalistaan")
+            flash("Olet jo liittynyt tähän kauppalistaan!")
             return redirect("/")
     else:
-        flash("Väärä salasana")
+        flash("Väärä salasana!")
         return redirect("/")
 
 # Redirect to registration page
@@ -283,7 +281,7 @@ def create():
         flash("Tunnukset luotu!")
         return redirect("/register")
     except sqlite3.IntegrityError:
-        flash("Tunnus on jo varattu")
+        flash("Tunnus on jo varattu!")
         return redirect("/register")
 
 # Login
@@ -309,7 +307,7 @@ def login():
         session["csrf_token"] = secrets.token_hex(16)
         return redirect("/")
     else:
-        flash("Väärä tunnus tai salasana")
+        flash("Väärä tunnus tai salasana!")
         return redirect("/")
 
 # Logout
