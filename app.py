@@ -296,7 +296,7 @@ def login():
     result = shopping_lists.log_in(username)
 
     if not result:
-        flash("Väärä tunnus tai salasana")
+        flash("Väärä tunnus tai salasana!")
         return redirect("/")
 
     user_id, password_hash = result[0]

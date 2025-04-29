@@ -40,8 +40,3 @@ CREATE TABLE purchased_item (
     price DECIMAL(10, 2),
     purchase_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-INSERT OR IGNORE INTO categories (name) VALUES
-('Elintarvikkeet'),
-('Käyttötavarat'),
-('Muut');

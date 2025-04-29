@@ -18,16 +18,16 @@
 
   {% else %}
 
+  <div>
+    <h2>Tervetuloa käyttämään Kauppalista-sovellusta!</h2>
+    <p>Jos sinulla ei vielä ole tunnuksia, voit <a href="/register" style="font-weight: bold; color: black;">rekisteröityä täällä</a>.</p>
+  </div>
+
   {% for message in get_flashed_messages() %}
   <p>
     <b>{{ message }}</b>
   </p>
   {% endfor %}
-
-  <div>
-    <h2>Tervetuloa käyttämään Kauppalista-sovellusta!</h2>
-    <p>Jos sinulla ei vielä ole tunnuksia, voit <a href="/register" style="font-weight: bold; color: black;">rekisteröityä täällä</a>.</p>
-  </div>
   
   <form action="/login" method="post">
     <label for="username">Tunnus:</label><br />
