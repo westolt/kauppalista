@@ -30,17 +30,13 @@
   </div>
   
   <form action="/login" method="post">
-    <p>
-      Tunnus: <br />
+    <label for="username">Tunnus:</label><br />
       <input type="text" name="username" />
-    </p>
-    <p>
-      Salasana: <br />
-      <input type="password" name="password" />
-    </p>
-    <p>
+      <br />
+      <label for="password">Salasana:</label><br />
+      <input type="password" name="password" /><br />
+      <br />
       <input type="submit" value="Kirjaudu" />
-    </p>
   </form>
   {% endif %}
 </body>

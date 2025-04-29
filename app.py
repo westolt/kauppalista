@@ -188,8 +188,8 @@ def show_shopping_list(shopping_list_id):
 
     filtered_items = [
         item for item in items
-        if category_filter == 'all' or
-           str(item['category_id']) == category_filter
+        if category_filter == "all" or
+           str(item["category_id"]) == category_filter
     ]
 
     return render_template("show_shopping_list.html", shopping_list=shopping_list, items=items, filtered_items=filtered_items, shopping_list_users=shopping_list_users, categories=categories)
@@ -217,7 +217,7 @@ def new_shopping_list():
         flash("Lista luotu onnistuneesti!")
         return redirect("/")
     except sqlite3.IntegrityError:
-        flash(f"Lista nimellä '{name}' on jo olemassa")
+        flash(f"Lista nimellä '{name}' on jo olemassa!")
         return redirect("/")
 
 # Join another user's list

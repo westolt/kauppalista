@@ -29,17 +29,21 @@
 
 <h2>Uusi kauppalista</h2>
 <form action="{{ url_for('new_shopping_list') }}" method="post">
-    <input type="text" name="name" placeholder="Anna kauppalistan nimi" maxlength="25" required >
-    <input type="password" name="password" placeholder="Anna salasana"minlength="3" maxlength="20" required>
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-    <button type="submit">Luo</button>
+  <label for="new_list_name">Nimi:</label>
+  <input type="text" name="name" maxlength="25" required >
+  <label for="new_list_password">Salasana:</label>
+  <input type="password" name="password" minlength="3" maxlength="20" required>
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+  <button type="submit">Luo</button>
 </form>
 
 <h2>Liity kauppalistaan</h2>
 <form action="{{ url_for('join_shopping_list') }}" method="post">
-    <input type="text" name="name" placeholder="Listan nimi">
-    <input type="password" name="password" placeholder="Salasana">
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-    <button type="submit">Liity</button>
+  <label for="join_list_name">Nimi:</label>
+  <input type="text" name="name">
+  <label for="join_list_password">Salasana:</label>
+  <input type="password" name="password">
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+  <button type="submit">Liity</button>
 </form>
   {% endblock %}

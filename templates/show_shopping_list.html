@@ -6,11 +6,12 @@
 <h2>{{ shopping_list.name }}</h2>
 
 <form method="GET" action="{{ url_for('show_shopping_list', shopping_list_id=shopping_list.id) }}">
-    <select name="category_filter">
-        <option value="all">Kaikki</option>
-        <option value="1">Elintarvikkeet</option>
-        <option value="2">Käyttötavara</option>
-        <option value="3">Muu</option>
+    <label for="category_filter">Suodata tuoteryhmän mukaan:</label>
+    <select id="category_filter" name="category_filter">
+    <option value="all">Kaikki</option>
+    <option value="1">Elintarvikkeet</option>
+    <option value="2">Käyttötavara</option>
+    <option value="3">Muu</option>
     </select>
     <button type="submit">Näytä</button>
 </form>
@@ -40,9 +41,14 @@
 
 <h3>Lisää tuote</h3>
 <form action="{{ url_for('add_item', shopping_list_id=shopping_list.id) }}" method="POST">
-    <input type="text" name="name" placeholder="Tuotteen nimi" maxlength="20" required>
-    <input type="text" name="quantity" placeholder="Määrä" maxlength="10" required>
-    Tuoteryhmät<select name="category_id" required>
+    <label for="item_name">Tuotteen nimi:</label>
+    <input type="text" id="item_name" name="name" maxlength="20" required>
+    <br>
+    <label for="item_quantity">Määrä:</label>
+    <input type="text" id="item_quantity" name="quantity" maxlength="10" required>
+    <br>
+    <label for="item_category">Tuoteryhmät:</label>
+    <select id="item_category" name="category_id" required>
         <option value="1">Elintarvike</option>
         <option value="2">Käyttötavara</option>
         <option value="3">Muu</option>

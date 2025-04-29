@@ -12,18 +12,18 @@
 <form method="POST">
     <p>Tuote: {{ item.name }}</p>
     <p>Määrä: {{ item.quantity }}</p>
-    <label for="price">Hinta:</label>
-    <input type="text" id="price" name="price" required> €
-    <br>
-    <br>
-    <label for="purchased_by_user_id">Ostaja:</label>
-    <select id="purchased_by_user_id" name="purchased_by_user_id" required>
-        {% for user in users %}
-            <option value="{{ user.id }}">{{ user.username }}</option>
-        {% endfor %}
-    </select>
-    <br>
-    <br>
+    <div>
+        <label for="price">Hinta:</label>
+        <input type="text" id="price" name="price" required> €
+    </div>
+    <div>
+        <label for="purchased_by_user_id">Ostaja:</label>
+        <select id="purchased_by_user_id" name="purchased_by_user_id" required>
+            {% for user in users %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+    </div>
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <button type="submit">Tallenna</button>
 </form>

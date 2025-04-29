@@ -15,18 +15,16 @@
   {% endfor %}
 
   <form action="/create" method="post">
-    <p>
-      Käyttäjänimi: <br />
-      <input type="text" name="username" maxlength="15" required />
-    </p>
-    <p>
-      Salasana: <br />
-      <input type="password" name="password1" minlength="3" maxlength="20" required />
-    </p>
-    <p>
-      Salasana uudestaan: <br />
-      <input type="password" name="password2" />
-    </p>
+    <label for="reg_username">Käyttäjänimi:</label><br />
+    <input type="text" id="reg_username" name="username" maxlength="15" required />
+    <br />
+    <label for="reg_password1">Salasana:</label><br />
+    <input type="password" id="reg_password1" name="password1" minlength="3" maxlength="20" required />
+    <br />
+    <label for="reg_password2">Salasana uudestaan:</label><br />
+    <input type="password" id="reg_password2" name="password2" />
+    <br />
+    <br />
     <input type="submit" value="Luo tunnus" />
   </form>
   <p>
