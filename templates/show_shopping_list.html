@@ -8,10 +8,10 @@
 <form method="GET" action="{{ url_for('show_shopping_list', shopping_list_id=shopping_list.id) }}">
     <label for="category_filter">Suodata tuoteryhmän mukaan:</label>
     <select id="category_filter" name="category_filter">
-    <option value="all">Kaikki</option>
-    <option value="1">Elintarvikkeet</option>
-    <option value="2">Käyttötavara</option>
-    <option value="3">Muu</option>
+        <option value="all">Kaikki</option>
+        <option value="1">Elintarvikkeet</option>
+        <option value="2">Käyttötavara</option>
+        <option value="3">Muu</option>
     </select>
     <button type="submit">Näytä</button>
 </form>
