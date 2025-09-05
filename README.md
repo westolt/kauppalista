@@ -15,7 +15,7 @@
 *  When the last user leaves a list, all information related to that list is removed from the database. The application confirms with the user before performing this action.
 *  The shopping list can be sorted by product categories.
 
-## Application installation
+# Application installation
 
 ## Create a virtual environment
 python3 -m venv venv
@@ -27,8 +27,9 @@ source venv/bin/activate
 pip install flask
 
 ## Create the database tables and initial data
+```bash
 sqlite3 database.db < schema.sql
 sqlite3 database.db < init.sql
-
+```
 ## Run the application
 flask run
