@@ -1,29 +1,27 @@
-# Kotitalouden Kauppalista
+# Shopping List
 
-## Sovelluksen toiminnot
-*  Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen.
-*  Käyttäjä pystyy luomaan salasanalla toimivan kauppalistan.
-*  Käyttäjä pystyy etsimään ja liittymään toisen käyttäjän kauppalistaan, jos tietää kauppalistan nimen ja salasanan.
-*  Käyttäjä voi lisätä kauppalistaan tuotteita ja niiden tarvittavan määrän sekä muokata ja poistaa lisäämiään tuotteita.
-*  Käyttäjä pystyy valitsemaan tuotteelle tuoteryhmän (elintarvikkeet, käyttötavarat, muut).
-*  Käyttäjä näkee kauppalistaan lisätyt tuotteet. Käyttäjä näkee sekä itse lisäämänsä että muiden käyttäjien lisäämät tuotteet.
-*  Käyttäjä pystyy luokittelemaan tuotteen ostajaksi kenet tahansa listan jäsenistä. Luokittelun perusteella tuote siirtyy maksajan käyttäjäsivulle.
-*  Käyttäjäsivulla näkyy ostotiedot:
-    - Käyttäjän maksaman tuotteen hinta, määrä ja ostoaika.
-    - Jos listalla on useita jäseniä, profiiliin lasketaan automaattisesti käyttäjän osuus prosentteina kaikkien käyttäjien ostoksista.
-*  Eri listoilla on omat käyttäjäsivut eli ostetut tuotteet eivät mene eri listojen kesken sekaisin.
-*  Kun listan viimeinen käyttäjä päättää poistua listasta, poistuu tietokannasta kaikki listaan liittyvät tiedot. Ohessa ohjelma varmistaa käyttäjältä haluaako tämä varmasti tehdä tämän.
-*  Listan pystyy järjestämään tuoteryhmien perusteella.
+## Application Features
+*  Users can create an account and log in to the application.
+*  Users can create a shopping list that is protected by a password.
+*  Users can search for and join another user's shopping list if they know the list name and password.
+*  Users can add products to the shopping list, specify the required quantity, and edit or delete the products they have added.
+*  Users can assign a category to each product (Groceries, Household Items, Other).
+*  Users can see all products added to the shopping list, including their own and those added by other users.
+*  Users can assign any member of the list as the buyer for a product. Based on this assignment, the product will appear on the buyer’s user page.
+*  The user page shows purchase information:
+*  Price, quantity, and purchase time of the products paid for by the user.
+*  If the list has multiple members, the user’s share of purchases is automatically calculated as a percentage of all users’ purchases.
+*  Each list has its own user pages, so purchased products are not mixed between different lists.
+*  When the last user leaves a list, all information related to that list is removed from the database. The application confirms with the user before performing this action.
+*  The shopping list can be sorted by product categories.
 
-## Sovelluksen asennus
+## Application installation
 
-Asenna "flask"-kirjasto:
-
+Install the "flask"-library:
 
 pip install flask
 
-
-Luo tietokannan taulut ja lisää alkutiedot:
+Create the database tables and add initial data:
 
 
 sqlite3 database.db < schema.sql
@@ -31,7 +29,6 @@ sqlite3 database.db < schema.sql
 sqlite3 database.db < init.sql
 
 
-Voit käynnistää sovelluksen näin:
-
+You can start the application as follows:
 
 flask run
