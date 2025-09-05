@@ -17,18 +17,18 @@
 
 ## Application installation
 
-Install the "flask"-library:
+## Create a virtual environment
+python3 -m venv venv
 
+## Activate the virtual environment
+source venv/bin/activate
+
+## Install Flask
 pip install flask
 
-Create the database tables and add initial data:
-
-
+## Create the database tables and initial data
 sqlite3 database.db < schema.sql
-
 sqlite3 database.db < init.sql
 
-
-You can start the application as follows:
-
+## Run the application
 flask run
