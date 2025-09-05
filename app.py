@@ -80,7 +80,7 @@ def buy_item(shopping_list_id, item_id):
 
         if (not re.match(r'^\d{1,5}(\.\d{1,2})?$', price) or
                 float(price) < 0 or float(price) > 10000):
-            flash("Anna kelvollinen hinta väliltä 0 - 10000, enintään kaksi desimaalia.")
+            flash("Please enter a valid price between 0 and 10000, with up to two decimals.")
             return redirect(url_for("buy_item", shopping_list_id=shopping_list_id,
                                   item_id=item_id))
 
@@ -228,10 +228,10 @@ def new_shopping_list():
 
     try:
         shopping_lists.create_list(name, password_hash, user_id)
-        flash("Lista luotu onnistuneesti!")
+        flash("List created successfully!")
         return redirect("/")
     except sqlite3.IntegrityError:
-        flash(f"Lista nimellä '{name}' on jo olemassa!")
+        flash(f"A list named '{name}' already exists!")
         return redirect("/")
 
 # Join another user's list
@@ -247,22 +247,22 @@ def join_shopping_list():
 
     result = shopping_lists.get_list_by_name(name)
     if not result:
-        flash("Kauppalistaa ei löydy")
+        flash("Shopping list not found")
         return redirect("/")
 
     shopping_list_id = result[0][0]
     password_hash = result[0][1]
 
     if not check_password_hash(password_hash, password):
-        flash("Väärä salasana!")
+        flash("Incorrect password!")
         return redirect("/")
 
     try:
         shopping_lists.join_list(shopping_list_id, user_id)
-        flash("Kauppalistaan liittyminen onnistui!")
+        flash("Successfully joined the shopping list!")
         return redirect("/")
     except sqlite3.IntegrityError:
-        flash("Olet jo liittynyt tähän kauppalistaan!")
+        flash("You have already joined this shopping list!")
         return redirect("/")
 
 # Redirect to registration page
@@ -284,17 +284,17 @@ def create():
         abort(403)
 
     if password1 != password2:
-        flash("Salasanat eivät ole samat")
+        flash("Passwords do not match")
         return redirect("/register")
 
     password_hash = generate_password_hash(password1)
 
     try:
         shopping_lists.create_user(username, password_hash)
-        flash("Tunnukset luotu!")
+        flash("Account created!")
         return redirect("/register")
     except sqlite3.IntegrityError:
-        flash("Tunnus on jo varattu!")
+        flash("Username already taken!")
         return redirect("/register")
 
 # Login
@@ -308,7 +308,7 @@ def login():
 
     result = shopping_lists.log_in(username)
     if not result:
-        flash("Väärä tunnus tai salasana!")
+        flash("Invalid username or password!")
         return redirect("/")
 
     user_id, password_hash = result[0]
@@ -319,7 +319,7 @@ def login():
         session["csrf_token"] = secrets.token_hex(16)
         return redirect("/")
     else:
-        flash("Väärä tunnus tai salasana!")
+        flash("Invalid username or password!")
         return redirect("/")
 
 # Logout

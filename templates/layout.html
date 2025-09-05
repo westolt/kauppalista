@@ -6,12 +6,12 @@
 </head>
 
 <body>
-    <h1>Kauppalista</h1>
+    <h1>Shopping List</h1>
   {% if session.username %}
-  <p>Olet kirjautunut nimellä {{ session.username }}</p>
+  <p>You are logged in as {{ session.username }}</p>
       <p>
-        <a href="/"><button>Etusivu</button></a> |
-        <a href="/logout"><button>Kirjaudu ulos</button></a>
+        <a href="/"><button>Home</button></a> |
+        <a href="/logout"><button>Log out</button></a>
       </p>
 
       {% block content %}{% endblock %}
@@ -19,8 +19,8 @@
   {% else %}
 
   <div>
-    <h2>Tervetuloa käyttämään Kauppalista-sovellusta!</h2>
-    <p>Jos sinulla ei vielä ole tunnuksia, voit <a href="/register" style="font-weight: bold; color: black;">rekisteröityä täällä</a>.</p>
+    <h2>Welcome to the Shopping List application!</h2>
+    <p>If you do not have an account yet, you can <a href="/register" style="font-weight: bold; color: black;">register here</a>.</p>
   </div>
 
   {% for message in get_flashed_messages() %}
@@ -30,10 +30,10 @@
   {% endfor %}
   
   <form action="/login" method="post">
-    <label for="username">Tunnus:</label><br />
+    <label for="username">Username:</label><br />
       <input type="text" name="username" />
       <br />
-      <label for="password">Salasana:</label><br />
+      <label for="password">Password:</label><br />
       <input type="password" name="password" /><br />
       <br />
       <input type="submit" value="Kirjaudu" />

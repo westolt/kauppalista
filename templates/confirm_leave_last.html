@@ -1,19 +1,19 @@
 {% extends "layout.html" %}
 
-{% block title %}Kauppalista{% endblock %}
+{% block title %}Shopping List{% endblock %}
 
 {% block content %}
-    <h2>Olet listan "{{ shopping_list.name }}" viimeinen jäsen</h2>
-    <p>Jos poistut listalta, koko lista poistetaan pysyvästi.</p>
+    <h2>You are the last member of the list "{{ shopping_list.name }}"</h2>
+    <p>If you leave the list, the entire list will be permanently deleted.</p>
     
     <form action="{{ url_for('leave_shopping_list') }}" method="POST">
         <input type="hidden" name="shopping_list_id" value="{{ shopping_list.id }}">
         <input type="hidden" name="confirm_delete" value="true">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-        <button type="submit">Kyllä, poista lista pysyvästi</button>
+        <button type="submit">Yes, delete the list permanently</button>
     </form> <br>
     
     <a href="/">
-        <button>Peruuta</button>
+        <button>Cancel</button>
     </a>
 {% endblock %}

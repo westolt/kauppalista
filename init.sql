@@ -1,4 +1,4 @@
 INSERT OR IGNORE INTO categories (name) VALUES
-('Elintarvikkeet'),
-('Käyttötavarat'),
-('Muut');
+('Groceries'),
+('Household Items'),
+('Other');

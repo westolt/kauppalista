@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
 
-{% block title %}Kauppalista{% endblock %}
+{% block title %}Shopping List{% endblock %}
 
 {% block content %}
-<h3>Käyttäjän {{ user.username }} - ostokset listalta: {{ shopping_list.name }}</h3>
+<h3>User {{ user.username }} - purchases from list: {{ shopping_list.name }}</h3>
 <ul>
 {% for item in purchased_items %}
   <div class="item_info">
@@ -11,26 +11,26 @@
       <li>
       {{ item.name }} ({{ item.quantity }}) - {{ item.price }}€ <br />
     </li>
-      <small>Ostettu: {{ item.purchase_time }}</small>
+      <small>Purchased: {{ item.purchase_time }}</small>
     </div>
   </div>
 {% else %}
-    Ei ostettuja tuotteita
+    No purchased items
 {% endfor %}
 </ul>
 
 {% if purchased_items %}
-  <h3>Yhteensä: {{ total_price }}€</h3>
+  <h3>Total: {{ total_price }}€</h3>
 {% endif %}
 
 {% if overall_total_price is not none %}
-  <h4>Kaikkien käyttäjien maksamat tuotteet yhteensä: {{ "%.2f"|format(overall_total_price) }}€</h4>
+  <h4>Total cost of items purchased by all users: {{ "%.2f"|format(overall_total_price) }}€</h4>
   {% if overall_total_price > 0 %}
-    <h4>{{ user.username }} on maksanut {{ "%.2f"|format((total_price / overall_total_price) * 100) }}% kokonaissummasta</h4>
+    <h4>{{ user.username }} has paid {{ "%.2f"|format((total_price / overall_total_price) * 100) }}% of the total amount</h4>
   {% endif %}
 {% endif %}
 
 <p>
-  <a href="/shopping_list/{{ shopping_list_id }}"><button>Takaisin</button></a>
+  <a href="/shopping_list/{{ shopping_list_id }}"><button>Back</button></a>
 </p>
 {% endblock %}

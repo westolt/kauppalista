@@ -1,19 +1,19 @@
 {% extends "layout.html" %}
 
-{% block title %}Kauppalista{% endblock %}
+{% block title %}Shopping List{% endblock %}
 
 {% block content %}
 <h2>{{ shopping_list.name }}</h2>
 
 <form method="GET" action="{{ url_for('show_shopping_list', shopping_list_id=shopping_list.id) }}">
-    <label for="category_filter">Suodata tuoteryhmän mukaan:</label>
+    <label for="category_filter">Filter by category:</label>
     <select id="category_filter" name="category_filter">
-        <option value="all">Kaikki</option>
-        <option value="1">Elintarvikkeet</option>
-        <option value="2">Käyttötavara</option>
-        <option value="3">Muu</option>
+        <option value="all">All</option>
+        <option value="1">Groceries</option>
+        <option value="2">Household Items</option>
+        <option value="3">Other</option>
     </select>
-    <button type="submit">Näytä</button>
+    <button type="submit">Show</button>
 </form>
 
 
@@ -24,40 +24,41 @@
     </div>
     <div class="item_buttons">
         <div class="buy_item">
-            <a href="{{ url_for('buy_item', shopping_list_id=shopping_list.id, item_id=item.id) }}"><button>Merkitse ostetuksi</button></a>
+            <a href="{{ url_for('buy_item', shopping_list_id=shopping_list.id, item_id=item.id) }}"><button>Mark as bought</button></a>
         </div>
         <div class="edit_item">
-            <a href="{{ url_for('edit_item', shopping_list_id=shopping_list.id, item_id=item.id) }}"><button>Muokkaa</button></a>
+            <a href="{{ url_for('edit_item', shopping_list_id=shopping_list.id, item_id=item.id) }}"><button>Edit</button></a>
         </div>
         <div class="delete_item">
             <form action="{{ url_for('delete_item', shopping_list_id=shopping_list.id, item_id=item.id) }}" method="POST" style="display:inline;">
                 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-                <button type="submit">Poista</button>
+                <button type="submit">Delete</button>
             </form>
         </div>
     </div>
 </div>
 {% endfor %}
 
-<h3>Lisää tuote</h3>
+<h3>Add item</h3>
 <form action="{{ url_for('add_item', shopping_list_id=shopping_list.id) }}" method="POST">
-    <label for="item_name">Tuotteen nimi:</label>
+    <label for="item_name">Item name:</label>
     <input type="text" id="item_name" name="name" maxlength="20" required>
     <br>
-    <label for="item_quantity">Määrä:</label>
+    <label for="item_quantity">Quantity:</label>
     <input type="text" id="item_quantity" name="quantity" maxlength="10" required>
     <br>
-    <label for="item_category">Tuoteryhmä:</label>
+    <label for="item_category">Category:</label>
     <select id="item_category" name="category_id" required>
-        <option value="1">Elintarvike</option>
-        <option value="2">Käyttötavara</option>
-        <option value="3">Muu</option>
+        <option value="1">Groceries</option>
+        <option value="2">Household Items</option>
+        <option value="3">Other</option>
     </select>
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-    <button type="submit">Lisää</button>
+    <button type="submit">Add</button>
 </form>
 
-<h3>Käyttäjät</h3>
+<h3>Users</h3>
+<p>Click username to see more details about purchases!</p>
 <div class="user_list">
     {% for user in shopping_list_users %}
         <a class="user" href="/user/{{ user.id }}?shopping_list_id={{ shopping_list.id }}">{{ user.username }}</a>

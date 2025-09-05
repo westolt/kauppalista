@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 
-{% block title %}Kauppalista{% endblock %}
+{% block title %}Shopping List{% endblock %}
 
 {% block content %}
 
-<h2>Omat kauppalistat</h2>
+<h2>My Shopping Lists</h2>
 {% for message in get_flashed_messages() %}
   <p>
     <b>{{ message }}</b>
@@ -18,32 +18,32 @@
     <form action="/leave_shopping_list" method="post" style="display: inline;">
       <input type="hidden" name="shopping_list_id" value="{{shopping_list.id}}">
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-      <button type="submit">Poistu listasta</button>
+      <button type="submit">Leave list</button>
     </form>
   </div>
 </div>
 {% endfor %}
 {% else %}
-  <p>Sinulla ei ole vielä kauppalistoja.</p>
+  <p>You do not have any shopping lists yet.</p>
 {% endif %}
 
-<h2>Uusi kauppalista</h2>
+<h2>New Shopping List</h2>
 <form action="{{ url_for('new_shopping_list') }}" method="post">
-  <label for="new_list_name">Nimi:</label>
+  <label for="new_list_name">Name:</label>
   <input type="text" name="name" maxlength="25" required >
-  <label for="new_list_password">Salasana:</label>
+  <label for="new_list_password">Password:</label>
   <input type="password" name="password" minlength="3" maxlength="20" required>
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-  <button type="submit">Luo</button>
+  <button type="submit">Create</button>
 </form>
 
-<h2>Liity kauppalistaan</h2>
+<h2>Join a Shopping List</h2>
 <form action="{{ url_for('join_shopping_list') }}" method="post">
-  <label for="join_list_name">Nimi:</label>
+  <label for="join_list_name">Name:</label>
   <input type="text" name="name">
-  <label for="join_list_password">Salasana:</label>
+  <label for="join_list_password">Password:</label>
   <input type="password" name="password">
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-  <button type="submit">Liity</button>
+  <button type="submit">Join</button>
 </form>
   {% endblock %}

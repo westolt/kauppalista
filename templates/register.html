@@ -3,11 +3,11 @@
 
 <head>
   <link rel="stylesheet" href="/static/main.css">
-  <title>Rekisteröinti</title>
+  <title>Register</title>
 </head>
 
 <body>
-  <h1>Kauppalista</h1>
+  <h1>Shopping List</h1>
   {% for message in get_flashed_messages() %}
   <p>
     <b>{{ message }}</b>
@@ -15,20 +15,20 @@
   {% endfor %}
 
   <form action="/create" method="post">
-    <label for="reg_username">Käyttäjänimi:</label><br />
+    <label for="reg_username">Username:</label><br />
     <input type="text" id="reg_username" name="username" maxlength="15" required />
     <br />
-    <label for="reg_password1">Salasana:</label><br />
+    <label for="reg_password1">Password:</label><br />
     <input type="password" id="reg_password1" name="password1" minlength="3" maxlength="20" required />
     <br />
-    <label for="reg_password2">Salasana uudestaan:</label><br />
+    <label for="reg_password2">Repeat password:</label><br />
     <input type="password" id="reg_password2" name="password2" />
     <br />
     <br />
-    <input type="submit" value="Luo tunnus" />
+    <input type="submit" value="Create account" />
   </form>
   <p>
-    <a href="/"><button>Takaisin</button></a>
+    <a href="/"><button>Back</button></a>
   </p>
 </body>
 
